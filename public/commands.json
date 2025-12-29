@@ -1,0 +1,1017 @@
+[
+  {
+    "id": "dig",
+    "usage": "dig {{domain}}",
+    "help": "Query DNS records for a domain name",
+    "args": [
+      "domain"
+    ],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "; <<>> DiG 9.18.1 <<>> {{domain}}\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 12345"
+      },
+      {
+        "type": "startPhase",
+        "phase": "DNS"
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1"
+        ],
+        "style": "dns_query",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "switch1",
+          "router1"
+        ],
+        "style": "dns_query",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "router1",
+          "firewall1"
+        ],
+        "style": "dns_query",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "firewall1",
+          "earth1"
+        ],
+        "style": "dns_query",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "earth1",
+          "dns1"
+        ],
+        "style": "dns_query",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "updateMetadata",
+        "entity": "dns1",
+        "kv": {
+          "status": "processing",
+          "query": "{{domain}}"
+        },
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "dns1",
+          "earth1"
+        ],
+        "style": "dns_response",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "earth1",
+          "firewall1"
+        ],
+        "style": "dns_response",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "firewall1",
+          "router1"
+        ],
+        "style": "dns_response",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "router1",
+          "switch1"
+        ],
+        "style": "dns_response",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "switch1",
+          "desktop1"
+        ],
+        "style": "dns_response",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": ";; ANSWER SECTION:\n{{domain}}.    {{TTL}}    IN    A    {{IP}}\n\n;; Query time: {{QUERY_TIME}} msec\n;; SERVER: {{DNS_SERVER}}#53({{DNS_SERVER}})\n;; WHEN: {{TIMESTAMP}}\n;; MSG SIZE  rcvd: 92",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "nslookup",
+    "usage": "nslookup {{domain}}",
+    "help": "Query DNS nameserver for domain information",
+    "args": [
+      "domain"
+    ],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Server:    {{DNS_SERVER}}\nAddress:   {{DNS_SERVER}}#53\n\nNon-authoritative answer:"
+      },
+      {
+        "type": "startPhase",
+        "phase": "DNS"
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1",
+          "router1",
+          "firewall1",
+          "earth1",
+          "dns1"
+        ],
+        "style": "dns_query",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "dns1",
+          "earth1",
+          "firewall1",
+          "router1",
+          "switch1",
+          "desktop1"
+        ],
+        "style": "dns_response",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "Name:    {{domain}}\nAddress: {{IP}}\nAddress: 2607:f8b0:4004:c07::64",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "openssl_connect",
+    "usage": "openssl s_client -connect {{host}}:443",
+    "help": "Test TLS/SSL connection to a server",
+    "args": [
+      "host"
+    ],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "CONNECTED(00000003)\ndepth=2 C = US, O = Google Trust Services LLC, CN = GTS Root R1\nverify return:1"
+      },
+      {
+        "type": "startPhase",
+        "phase": "TLSHandshake"
+      },
+      {
+        "type": "consoleOutput",
+        "text": "---\nClientHello sent...",
+        "delayMs": 50
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1"
+        ],
+        "style": "tls_handshake",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "switch1",
+          "router1"
+        ],
+        "style": "tls_handshake",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "router1",
+          "firewall1"
+        ],
+        "style": "tls_handshake",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "firewall1",
+          "earth1"
+        ],
+        "style": "tls_handshake",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "earth1",
+          "cdn1"
+        ],
+        "style": "tls_handshake",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "updateMetadata",
+        "entity": "cdn1",
+        "kv": {
+          "status": "handshaking",
+          "sni": "{{host}}"
+        },
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "ServerHello received...\nCertificate chain verified.",
+        "delayMs": 50
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "cdn1",
+          "earth1"
+        ],
+        "style": "tls_encrypted",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "earth1",
+          "firewall1"
+        ],
+        "style": "tls_encrypted",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "firewall1",
+          "router1"
+        ],
+        "style": "tls_encrypted",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "router1",
+          "switch1"
+        ],
+        "style": "tls_encrypted",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "switch1",
+          "desktop1"
+        ],
+        "style": "tls_encrypted",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "---\nSSL handshake has read 4567 bytes and written 789 bytes\n---\nNew, TLSv1.3, Cipher is TLS_AES_128_GCM_SHA256\nServer public key is 2048 bit\nSecure Renegotiation IS NOT supported\nCompression: NONE\nExpansion: NONE\nSSL-Session:\n    Protocol  : TLSv1.3\n    Cipher    : TLS_AES_128_GCM_SHA256\n    Session-ID: \n    Master-Key: \n    TLS session ticket:\n    0000 - [encrypted]\n    Start Time: 1699644468\n    Timeout   : 7200 (sec)\n    Verify return code: 0 (ok)\n---",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "curl",
+    "usage": "curl -I https://{{domain}}",
+    "help": "Fetch HTTP headers from a URL",
+    "args": [
+      "domain"
+    ],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "* Trying 142.250.190.14:443...\n* Connected to {{domain}} (142.250.190.14) port 443 (#0)"
+      },
+      {
+        "type": "startPhase",
+        "phase": "HTTPS"
+      },
+      {
+        "type": "consoleOutput",
+        "text": "* ALPN, offering h2\n* ALPN, offering http/1.1\n* TLSv1.3 (OUT), TLS handshake, Client hello (1):",
+        "delayMs": 50
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1"
+        ],
+        "style": "http_req",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "switch1",
+          "router1"
+        ],
+        "style": "http_req",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "router1",
+          "firewall1"
+        ],
+        "style": "http_req",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "firewall1",
+          "earth1"
+        ],
+        "style": "http_req",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "earth1",
+          "cdn1"
+        ],
+        "style": "http_req",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "updateMetadata",
+        "entity": "cdn1",
+        "kv": {
+          "status": "cache_check",
+          "request": "GET / HTTP/2"
+        },
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "* Cache miss - fetching from origin...",
+        "delayMs": 50
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "cdn1",
+          "web1"
+        ],
+        "style": "http_req",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "updateMetadata",
+        "entity": "web1",
+        "kv": {
+          "status": "processing",
+          "request": "GET /"
+        },
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "web1",
+          "cdn1"
+        ],
+        "style": "http_resp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "updateMetadata",
+        "entity": "cdn1",
+        "kv": {
+          "status": "caching",
+          "cache_ttl": "300s"
+        },
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "cdn1",
+          "earth1"
+        ],
+        "style": "http_resp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "earth1",
+          "firewall1"
+        ],
+        "style": "http_resp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "firewall1",
+          "router1"
+        ],
+        "style": "http_resp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "router1",
+          "switch1"
+        ],
+        "style": "http_resp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "switch1",
+          "desktop1"
+        ],
+        "style": "http_resp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "HTTP/2 200 \ndate: Mon, 10 Nov 2025 19:37:48 GMT\ncontent-type: text/html; charset=UTF-8\nserver: gws\ncache-control: public, max-age=300\netag: \"4af2b1\"\ncontent-encoding: br\nalt-svc: h3=\":443\"; ma=2592000\n\n* Connection #0 to host {{domain}} left intact",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "tcpdump_read",
+    "usage": "tcpdump -r capture.pcap host {{host}}",
+    "help": "Read and filter network packet capture file",
+    "args": [
+      "host"
+    ],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "reading from file capture.pcap, link-type EN10MB (Ethernet)\n"
+      },
+      {
+        "type": "openInfoBoard",
+        "entity": "desktop1",
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "19:37:48.123456 IP 192.168.10.30.51234 > {{host}}.443: Flags [S], seq 123456789, win 65535\n19:37:48.145678 IP {{host}}.443 > 192.168.10.30.51234: Flags [S.], seq 987654321, ack 123456790, win 65535\n19:37:48.145789 IP 192.168.10.30.51234 > {{host}}.443: Flags [.], ack 1, win 65535\n19:37:48.167890 IP 192.168.10.30.51234 > {{host}}.443: Flags [P.], seq 1:517, ack 1, win 65535\n19:37:48.234567 IP {{host}}.443 > 192.168.10.30.51234: Flags [P.], seq 1:1024, ack 517, win 65535",
+        "delayMs": 50
+      },
+      {
+        "type": "consoleOutput",
+        "text": "\n5 packets captured",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "ping",
+    "usage": "ping -c 4 {{host}}",
+    "help": "Send ICMP echo requests to test connectivity",
+    "args": [
+      "host"
+    ],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "PING {{host}} ({{IP}}): 56 data bytes"
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1",
+          "router1",
+          "firewall1",
+          "earth1",
+          "web1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "web1",
+          "earth1",
+          "firewall1",
+          "router1",
+          "switch1",
+          "desktop1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "64 bytes from {{IP}}: icmp_seq=0 ttl=117 time=12.3 ms",
+        "delayMs": 50
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1",
+          "router1",
+          "firewall1",
+          "earth1",
+          "web1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "web1",
+          "earth1",
+          "firewall1",
+          "router1",
+          "switch1",
+          "desktop1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "64 bytes from {{IP}}: icmp_seq=1 ttl=117 time=11.8 ms",
+        "delayMs": 50
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1",
+          "router1",
+          "firewall1",
+          "earth1",
+          "web1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "web1",
+          "earth1",
+          "firewall1",
+          "router1",
+          "switch1",
+          "desktop1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "64 bytes from {{IP}}: icmp_seq=2 ttl=117 time=13.1 ms",
+        "delayMs": 50
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1",
+          "router1",
+          "firewall1",
+          "earth1",
+          "web1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "web1",
+          "earth1",
+          "firewall1",
+          "router1",
+          "switch1",
+          "desktop1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "64 bytes from {{IP}}: icmp_seq=3 ttl=117 time=12.5 ms\n\n--- {{host}} ping statistics ---\n4 packets transmitted, 4 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 11.8/12.4/13.1/0.5 ms",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "traceroute",
+    "usage": "traceroute {{host}}",
+    "help": "Trace the network path to a destination",
+    "args": [
+      "host"
+    ],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "traceroute to {{host}} ({{IP}}), 30 hops max, 60 byte packets"
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": " 1  192.168.10.1 (switch1)  1.234 ms",
+        "delayMs": 50
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "switch1",
+          "router1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": " 2  192.168.1.1 (router1)  2.567 ms",
+        "delayMs": 50
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "router1",
+          "firewall1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": " 3  203.0.113.1 (firewall1)  3.891 ms",
+        "delayMs": 50
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "firewall1",
+          "earth1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": " 4  * * * (internet gateway)",
+        "delayMs": 50
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "earth1",
+          "web1"
+        ],
+        "style": "icmp",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": " 5  {{IP}} ({{host}})  11.234 ms  10.987 ms  11.456 ms",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "ncat",
+    "usage": "ncat -v {{host}} {{port}}",
+    "help": "Connect to a host on a specific port using netcat",
+    "args": [
+      "host",
+      "port"
+    ],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Ncat: Version 7.92 ( https://nmap.org/ncat )\nNcat: Connecting to {{host}}:{{port}}..."
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1"
+        ],
+        "style": "tcp_syn",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "switch1",
+          "router1"
+        ],
+        "style": "tcp_syn",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "router1",
+          "firewall1"
+        ],
+        "style": "tcp_syn",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "firewall1",
+          "earth1"
+        ],
+        "style": "tcp_syn",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "earth1",
+          "web1"
+        ],
+        "style": "tcp_syn",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "updateMetadata",
+        "entity": "web1",
+        "kv": {
+          "status": "connection_established",
+          "port": "{{port}}"
+        },
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "web1",
+          "earth1",
+          "firewall1",
+          "router1",
+          "switch1",
+          "desktop1"
+        ],
+        "style": "tcp_syn",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "Ncat: Connected to {{host}}:{{port}}.\nNcat: Connection established.",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "whois",
+    "usage": "whois {{domain}}",
+    "help": "Query domain registration information",
+    "args": [
+      "domain"
+    ],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Connecting to whois server..."
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1",
+          "router1",
+          "firewall1",
+          "earth1",
+          "dns1"
+        ],
+        "style": "tcp_syn",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "dns1",
+          "earth1",
+          "firewall1",
+          "router1",
+          "switch1",
+          "desktop1"
+        ],
+        "style": "tcp_syn",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "\nDomain Name: {{domain}}\nRegistry Domain ID: 2138514_DOMAIN_COM-VRSN\nRegistrar WHOIS Server: whois.markmonitor.com\nRegistrar URL: http://www.markmonitor.com\nUpdated Date: 2024-09-09T15:10:49Z\nCreation Date: 1997-09-15T04:00:00Z\nRegistry Expiry Date: 2028-09-14T04:00:00Z\nRegistrar: MarkMonitor Inc.\nRegistrar IANA ID: 292\nRegistrar Abuse Contact Email: abusecomplaints@markmonitor.com\nDomain Status: clientDeleteProhibited\nDomain Status: clientTransferProhibited\nDomain Status: clientUpdateProhibited\nDomain Status: serverDeleteProhibited\nDomain Status: serverTransferProhibited\nDomain Status: serverUpdateProhibited\nName Server: NS1.{{domain}}\nName Server: NS2.{{domain}}\nName Server: NS3.{{domain}}\nName Server: NS4.{{domain}}\nDNSSEC: unsigned",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "netstat",
+    "usage": "netstat -an | grep {{port}}",
+    "help": "Display active network connections on a specific port",
+    "args": [
+      "port"
+    ],
+    "effects": [
+      {
+        "type": "openInfoBoard",
+        "entity": "desktop1"
+      },
+      {
+        "type": "consoleOutput",
+        "text": "Active Internet connections (including servers)\nProto Recv-Q Send-Q  Local Address          Foreign Address        (state)\ntcp4       0      0  192.168.10.30.51234    142.250.190.14.{{port}}    ESTABLISHED\ntcp4       0      0  192.168.10.30.51235    142.250.190.14.{{port}}    TIME_WAIT\ntcp4       0      0  192.168.10.30.51236    142.250.190.14.{{port}}    ESTABLISHED",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "arp",
+    "usage": "arp -a",
+    "help": "Display the ARP cache (IP to MAC address mappings)",
+    "args": [],
+    "effects": [
+      {
+        "type": "openInfoBoard",
+        "entity": "switch1"
+      },
+      {
+        "type": "consoleOutput",
+        "text": "? (192.168.10.1) at aa:bb:cc:dd:ee:01 on en0 ifscope [ethernet]\n? (192.168.10.30) at aa:bb:cc:dd:ee:02 on en0 ifscope [ethernet]\n? (192.168.10.254) at aa:bb:cc:dd:ee:ff on en0 ifscope permanent [ethernet]",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "route",
+    "usage": "route -n get {{host}}",
+    "help": "Display routing information for a destination",
+    "args": [
+      "host"
+    ],
+    "effects": [
+      {
+        "type": "openInfoBoard",
+        "entity": "router1"
+      },
+      {
+        "type": "consoleOutput",
+        "text": "   route to: {{host}}\ndestination: default\n       mask: default\n    gateway: 192.168.1.1\n  interface: en0\n      flags: <UP,GATEWAY,DONE,STATIC,PRCLONING>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500         0",
+        "delayMs": 50
+      }
+    ]
+  },
+  {
+    "id": "host",
+    "usage": "host {{domain}}",
+    "help": "Simple DNS lookup utility",
+    "args": [
+      "domain"
+    ],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Looking up {{domain}}..."
+      },
+      {
+        "type": "startPhase",
+        "phase": "DNS"
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "desktop1",
+          "switch1",
+          "router1",
+          "firewall1",
+          "earth1",
+          "dns1"
+        ],
+        "style": "dns_query",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "emitPackets",
+        "path": [
+          "dns1",
+          "earth1",
+          "firewall1",
+          "router1",
+          "switch1",
+          "desktop1"
+        ],
+        "style": "dns_response",
+        "count": 1,
+        "delayMs": 0
+      },
+      {
+        "type": "consoleOutput",
+        "text": "{{domain}} has address {{IP}}\n{{domain}} has IPv6 address 2607:f8b0:4004:c07::64\n{{domain}} mail is handled by 10 smtp.google.com.",
+        "delayMs": 50
+      }
+    ]
+  }
+]

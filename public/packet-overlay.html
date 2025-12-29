@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Packet Overlay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { margin: 0; height: 100%; background: transparent; }
+    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    @keyframes enterScale { from { opacity: 0; transform: scale(0.98) translateY(6px); } to { opacity: 1; transform: scale(1) translateY(0);} }
+    .enter-anim { animation: enterScale 150ms ease-out both; }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen w-screen bg-transparent flex items-center justify-center">
+    <div class="w-[760px] max-w-full enter-anim">
+      <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <div>
+            <div class="text-2xl font-semibold text-slate-900">Network Packet</div>
+          </div>
+          <!-- Packet ID pill removed -->
+        </div>
+
+        <div class="mb-4">
+          <!-- Removed top pills (Type, Encrypted, Protocol, Flags) -->
+
+          <div class="grid grid-cols-1">
+            <div class="rounded-md border border-slate-100 bg-white p-3 h-[320px] overflow-auto">
+              <div class="text-lg text-slate-500 mb-1 text-center">Fields</div>
+              <div class="text-[13px] text-slate-700 tracking-[0.01em] space-y-2">
+                <div id="row-method"><span class="text-slate-500">method:</span> <span id="fld-method" class="font-medium"></span></div>
+                <div id="row-path"><span class="text-slate-500">path:</span> <span id="fld-path" class="font-medium"></span></div>
+                <div id="row-step"><span class="text-slate-500">step:</span> <span id="fld-step" class="font-medium"></span></div>
+                <div id="row-ua"><span class="text-slate-500">user-agent:</span> <span id="fld-ua" class="font-medium"></span></div>
+                <div id="row-who_sends"><span class="text-slate-500">who_sends:</span> <span id="fld-who_sends" class="font-medium"></span></div>
+                <div id="row-from_to"><span class="text-slate-500">from_to:</span> <span id="fld-from_to" class="font-medium"></span></div>
+                <div id="row-what"><span class="text-slate-500">what:</span> <span id="fld-what" class="font-medium"></span></div>
+                <div id="row-protocol2"><span class="text-slate-500">protocol:</span> <span id="fld-protocol2" class="font-medium"></span></div>
+                <div id="row-encrypted2"><span class="text-slate-500">encrypted:</span> <span id="fld-encrypted2" class="font-medium"></span></div>
+                <div id="row-key_fields"><span class="text-slate-500">key_fields:</span> <span id="fld-key_fields" class="font-medium"></span></div>
+                <div id="row-what_changed_here"><span class="text-slate-500">what_changed_here:</span> <span id="fld-what_changed_here" class="font-medium"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const p = new URLSearchParams(window.location.search);
+      const set = (id, val) => { if (val != null) { const el = document.getElementById(id); if (el) el.textContent = val; } };
+      const setOrHide = (rowId, valueId, val) => {
+        const row = document.getElementById(rowId);
+        const valueEl = document.getElementById(valueId);
+        if (!row || !valueEl) return;
+        if (val != null && val !== '') { valueEl.textContent = val; row.style.display = ''; }
+        else { row.style.display = 'none'; }
+      };
+
+      // packet id pill removed
+      // removed: type/encrypted/protocol/flags pills
+
+      // Fields block (hide rows if empty)
+      setOrHide('row-method', 'fld-method', p.get('method'));
+      setOrHide('row-path', 'fld-path', p.get('path'));
+      setOrHide('row-ua', 'fld-ua', p.get('ua'));
+      setOrHide('row-step', 'fld-step', p.get('step'));
+      setOrHide('row-who_sends', 'fld-who_sends', p.get('who_sends'));
+      setOrHide('row-from_to', 'fld-from_to', p.get('from_to'));
+      setOrHide('row-what', 'fld-what', p.get('what'));
+      setOrHide('row-protocol2', 'fld-protocol2', p.get('protocol'));
+      setOrHide('row-encrypted2', 'fld-encrypted2', p.get('encrypted'));
+      setOrHide('row-key_fields', 'fld-key_fields', p.get('key_fields'));
+      setOrHide('row-what_changed_here', 'fld-what_changed_here', p.get('what_changed_here'));
+
+      set('pill-primary', p.get('primary') || (p.get('method') ? (p.get('protocol') || 'HTTP') + ' ' + p.get('method') : null));
+      set('disp-host', p.get('host'));
+
+      // Right panel metadata
+      set('meta-labelPrimary', p.get('primary'));
+      set('meta-labelSecondary', p.get('secondary'));
+
+      // DNS block
+      set('dns-qname', p.get('qname'));
+      set('dns-qtype', p.get('qtype'));
+      set('dns-answers', p.get('answers'));
+
+      // Binary and payload
+      set('meta-binary', p.get('binary'));
+      set('meta-payload', p.get('payload'));
+
+      set('meta-ttl', p.get('ttl'));
+      set('meta-size', p.get('size'));
+      set('meta-status', p.get('status'));
+    })();
+  </script>
+</body>
+</html>

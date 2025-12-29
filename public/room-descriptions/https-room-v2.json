@@ -1,0 +1,14 @@
+{
+  "room_id": "https_room_v2",
+  "title": "HTTPS Data Flow",
+  "cliWhitelist": [
+    "dig",
+    "nslookup",
+    "openssl_connect",
+    "curl",
+    "tcpdump_read",
+    "ping",
+    "traceroute",
+    "ncat"
+  ]
+}

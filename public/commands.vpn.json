@@ -1,0 +1,170 @@
+[
+  {
+    "id": "vpn",
+    "usage": "vpn [on|off|status]",
+    "help": "Show or toggle VPN tunnel (VPN room)",
+    "args": [],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "VPN command available. Try: vpn, vpn on, vpn off"
+      }
+    ]
+  },
+  {
+    "id": "whoami",
+    "usage": "whoami",
+    "help": "Show current terminal context (Remote User)",
+    "args": [],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Remote User (WAN)"
+      }
+    ]
+  },
+  {
+    "id": "topology",
+    "usage": "topology",
+    "help": "Print VPN room topology and key IPs",
+    "args": [],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "VPN Room Topology (use: vpn / vpn on / vpn off)"
+      }
+    ]
+  },
+  {
+    "id": "dig",
+    "usage": "dig <name>",
+    "help": "Query DNS records for a name",
+    "args": ["name"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "; <<>> DiG 9.18.1 <<>> {{name}}\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 12345\n\n;; QUESTION SECTION:\n;{{name}}.\tIN\tA\n\n;; ANSWER SECTION:\n{{name}}.\t{{TTL}}\tIN\tA\t{{IP}}\n\n;; Query time: {{QUERY_TIME}} msec\n;; SERVER: {{DNS_SERVER}}#53({{DNS_SERVER}})\n;; WHEN: {{TIMESTAMP}}\n;; MSG SIZE  rcvd: 92"
+      }
+    ]
+  },
+  {
+    "id": "nslookup",
+    "usage": "nslookup <name>",
+    "help": "Query DNS nameserver for name information",
+    "args": ["name"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Server:\t\t{{DNS_SERVER}}\nAddress:\t{{DNS_SERVER}}#53\n\nNon-authoritative answer:\nName:\t{{name}}\nAddress:\t{{IP}}"
+      }
+    ]
+  },
+  {
+    "id": "ping",
+    "usage": "ping <host>",
+    "help": "Basic reachability test (ICMP)",
+    "args": ["host"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "PING {{host}} ({{host}}): 56 data bytes\n64 bytes from {{host}}: icmp_seq=0 ttl=58 time=12.1 ms\n64 bytes from {{host}}: icmp_seq=1 ttl=58 time=12.6 ms\n\n--- {{host}} ping statistics ---\n2 packets transmitted, 2 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 12.1/12.4/12.6/0.2 ms"
+      }
+    ]
+  },
+  {
+    "id": "traceroute",
+    "usage": "traceroute <host>",
+    "help": "Trace the network path to a destination (simulated)",
+    "args": ["host"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "traceroute to {{host}} ({{host}}), 30 hops max, 60 byte packets\n 1  203.0.113.1  3.012 ms  2.944 ms  2.901 ms\n 2  * * *\n 3  {{host}}      14.234 ms  14.001 ms  14.456 ms"
+      }
+    ]
+  },
+  {
+    "id": "nc",
+    "usage": "nc <host> <port>",
+    "help": "Test TCP port reachability (netcat)",
+    "args": ["host", "port"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Connection to {{host}} {{port}} port [tcp/*] succeeded!"
+      }
+    ]
+  },
+  {
+    "id": "telnet",
+    "usage": "telnet <host> <port>",
+    "help": "Test TCP connectivity to a host/port",
+    "args": ["host", "port"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Trying {{host}}:{{port}}...\nConnected to {{host}}.\nEscape character is '^]'."
+      }
+    ]
+  },
+  {
+    "id": "openssl_connect",
+    "usage": "openssl s_client -connect <host>:443",
+    "help": "Test TLS/SSL connection to a server",
+    "args": ["host"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "CONNECTED(00000003)\n---\nClientHello sent...\nServerHello received...\n---\nNew, TLSv1.3, Cipher is TLS_AES_128_GCM_SHA256\nVerify return code: 0 (ok)"
+      }
+    ]
+  },
+  {
+    "id": "curl",
+    "usage": "curl <url>",
+    "help": "Make an HTTP(S) request",
+    "args": ["url"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "{{FW_CURL_RESULT}}"
+      }
+    ]
+  },
+  {
+    "id": "ip",
+    "usage": "ip",
+    "help": "Show interface summary (simulated)",
+    "args": [],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Try: whoami, vpn, route"
+      }
+    ]
+  },
+  {
+    "id": "ifconfig",
+    "usage": "ifconfig",
+    "help": "Show interface details (simulated)",
+    "args": [],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Try: whoami, vpn, route"
+      }
+    ]
+  },
+  {
+    "id": "route",
+    "usage": "route",
+    "help": "Show routing table (simulated)",
+    "args": [],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Try: vpn"
+      }
+    ]
+  }
+]

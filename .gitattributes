@@ -1,0 +1,4 @@
+public/inventory/** filter=lfs diff=lfs merge=lfs -text
+public/rooms/** filter=lfs diff=lfs merge=lfs -text
+public/textures/** filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text

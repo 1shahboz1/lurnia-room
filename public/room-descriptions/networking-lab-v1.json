@@ -1,0 +1,277 @@
+
+
+
+
+
+{
+  "id": "networking-lab-v1",
+  "name": "",
+  "description": "",
+  "structure": {
+    "dimensions": {
+      "width": 30,
+      "height": 9,
+      "depth": 24
+    },
+    "floor": {
+      "material": {
+        "color": "#808080",
+        "roughness": 0.95,
+        "metalness": 0.0,
+        "normalScale": 2.0,
+        "textureRepeat": [8, 6]
+      },
+      "thickness": 0.1,
+      "texture": {
+        "type": "carpet",
+        "pattern": "low-pile",
+        "tileSize": 0.5
+      }
+    },
+    "walls": {
+      "material": {
+        "color": "#e0e0e0",
+        "roughness": 0.7,
+        "metalness": 0.0
+      },
+      "thickness": 0.1,
+      "accent_wall": {
+        "position": "back",
+        "material": {
+          "color": "#2A3B52",
+          "roughness": 0.7,
+          "metalness": 0.0
+        }
+      }
+    },
+    "ceiling": {
+      "material": {
+        "color": "#fafafa",
+        "roughness": 0.6,
+        "metalness": 0.0
+      },
+      "thickness": 0.05,
+      "lights": [
+        {
+          "position": [-7.5, 8.97, -6],
+          "size": [5.2, 0.03, 3.25],
+          "material": {
+            "color": "#ffffff",
+            "emissive": "#ffffff",
+            "emissiveIntensity": 0.4,
+            "roughness": 0.0
+          }
+        },
+        {
+          "position": [0, 8.97, -6],
+          "size": [5.2, 0.03, 3.25],
+          "material": {
+            "color": "#ffffff",
+            "emissive": "#ffffff",
+            "emissiveIntensity": 0.4,
+            "roughness": 0.0
+          }
+        },
+        {
+          "position": [7.5, 8.97, -6],
+          "size": [5.2, 0.03, 3.25],
+          "material": {
+            "color": "#ffffff",
+            "emissive": "#ffffff",
+            "emissiveIntensity": 0.4,
+            "roughness": 0.0
+          }
+        },
+        {
+          "position": [-7.5, 8.97, 6],
+          "size": [5.2, 0.03, 3.25],
+          "material": {
+            "color": "#ffffff",
+            "emissive": "#ffffff",
+            "emissiveIntensity": 0.4,
+            "roughness": 0.0
+          }
+        },
+        {
+          "position": [0, 8.97, 6],
+          "size": [5.2, 0.03, 3.25],
+          "material": {
+            "color": "#ffffff",
+            "emissive": "#ffffff",
+            "emissiveIntensity": 0.4,
+            "roughness": 0.0
+          }
+        },
+        {
+          "position": [7.5, 8.97, 6],
+          "size": [5.2, 0.03, 3.25],
+          "material": {
+            "color": "#ffffff",
+            "emissive": "#ffffff",
+            "emissiveIntensity": 0.4,
+            "roughness": 0.0
+          }
+        }
+      ]
+    },
+    "decorative_elements": [
+      {
+        "id": "classroom-door",
+        "type": "door",
+        "position": [-11, 1.5, -11.9],
+        "rotation": [0, 0, 0],
+        "scale": [1.5, 3, 0.075],
+        "material": {
+          "color": "#8B4513",
+          "roughness": 0.9,
+          "metalness": 0.0
+        }
+      },
+      {
+        "id": "east-classroom-door",
+        "type": "door",
+        "position": [11, 1.5, -11.9],
+        "rotation": [0, 0, 0],
+        "scale": [1.5, 3, 0.075],
+        "material": {
+          "color": "#8B4513",
+          "roughness": 0.9,
+          "metalness": 0.0
+        },
+        "flippedHandle": true
+      },
+      {
+        "id": "smart-board",
+        "type": "whiteboard",
+        "position": [0, 4, -11.9],
+        "rotation": [0, 0, 0],
+        "scale": [6, 3.6, 0.1],
+        "material": {
+          "color": "#ffffff",
+          "roughness": 0.2,
+          "metalness": 0.0
+        }
+      },
+      {
+        "id": "north-text",
+        "type": "text",
+        "content": "NORTH",
+        "position": [6, 7, -11.5],
+        "rotation": [0, 0, 0],
+        "scale": 1.5,
+        "material": {
+          "color": "#ffffff"
+        }
+      },
+      {
+        "id": "south-text",
+        "type": "text",
+        "content": "SOUTH",
+        "position": [0, 7, 11.5],
+        "rotation": [0, 3.14159, 0],
+        "scale": 1.5,
+        "material": {
+          "color": "#333333"
+        }
+      },
+      {
+        "id": "east-text",
+        "type": "text",
+        "content": "EAST",
+        "position": [14.5, 7, 0],
+        "rotation": [0, -1.5708, 0],
+        "scale": 1.5,
+        "material": {
+          "color": "#333333"
+        }
+      },
+      {
+        "id": "west-text",
+        "type": "text",
+        "content": "WEST",
+        "position": [-14.5, 7, 0],
+        "rotation": [0, 1.5708, 0],
+        "scale": 1.5,
+        "material": {
+          "color": "#333333"
+        }
+      },
+      {
+        "id": "south-window",
+        "type": "window_view",
+        "position": [-8, 4.5, 11.9],
+        "rotation": [0, 3.14159, 0],
+        "scale": [7.5, 4.2, 0.15],
+        "leftImageUrl": "/textures/window/image1.png",
+        "rightImageUrl": "/textures/window/iamge2.png",
+        "frameColor": "#2D1B1F",
+        "glassOpacity": 0.25,
+        "parallaxFactor": 0.03
+      },
+      {
+        "id": "south-east-window",
+        "type": "window_view",
+        "position": [8, 4.5, 11.9],
+        "rotation": [0, 3.14159, 0],
+        "scale": [7.5, 4.2, 0.15],
+        "leftImageUrl": "/textures/window/image3.png",
+        "rightImageUrl": "/textures/window/image4.png",
+        "frameColor": "#2D1B1F",
+        "glassOpacity": 0.25,
+        "parallaxFactor": 0.03
+      },
+      {
+        "id": "perimeter-soffit",
+        "type": "ceiling_soffit",
+        "roomWidth": 30,
+        "roomHeight": 9,
+        "roomDepth": 24,
+        "soffitDepth": 3.0375,
+        "soffitDrop": 0.25,
+        "lightSpacing": 2.0,
+        "woodColor": "#D4BE94",
+        "lightColor": "#ffffff",
+        "lightIntensity": 1.2,
+        "lightTemperature": 4500
+      },
+      {
+        "id": "smart-board-backdrop",
+        "type": "wooden_panel_backdrop",
+        "position": [0, 4, -12.0],
+        "rotation": [0, 0, 0],
+        "panelWidth": 10,
+        "panelHeight": 6.8,
+        "panelThickness": 0.06,
+        "slatWidth": 0.12,
+        "gapWidth": 0.025,
+        "woodColor": "#7B6048",
+        "hasLEDStrip": true,
+        "ledColor": "#ffffff",
+        "boardDimensions": [6, 3.6]
+      },
+      {
+        "id": "honeycomb-feature-wall",
+        "type": "honeycomb_wall",
+        "position": [-14.95, 3.5, 0],
+        "rotation": [0, 1.5708, 0],
+        "wallWidth": 10,
+        "wallHeight": 3.5,
+        "hexSize": 1.0,
+        "gapSize": 0.02,
+        "protrusionRatio": 0.3
+      }
+    ]
+  },
+  "camera": {
+    "position": [8, 1.65, 6],
+    "target": [0, 1.65, 0],
+    "fov": 60
+  },
+  "environment": {
+    "lighting": "bright",
+    "background": "#e0e0e0",
+    "shadows": true
+  },
+  "models": []
+}
+

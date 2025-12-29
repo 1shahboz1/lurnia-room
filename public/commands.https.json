@@ -1,0 +1,170 @@
+[
+  {
+    "id": "whoami",
+    "usage": "whoami",
+    "help": "Show terminal context (LAN Desktop)",
+    "args": [],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "LAN Desktop Terminal\n\nhost: client\nos: Windows 11\ninterface: eth0  192.168.10.30/24\ngateway:  192.168.10.1\n\nTry: dig web-server"
+      }
+    ]
+  },
+  {
+    "id": "ip",
+    "usage": "ip",
+    "help": "Show interface summary (simulated)",
+    "args": [],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "ip addr (simulated)\n\n1: lo0: <LOOPBACK>\n    inet 127.0.0.1/8\n2: eth0: <BROADCAST,MULTICAST,UP>\n    inet 192.168.10.30/24 brd 192.168.10.255\n    default via 192.168.10.1"
+      }
+    ]
+  },
+  {
+    "id": "ifconfig",
+    "usage": "ifconfig",
+    "help": "Show interface details (simulated)",
+    "args": [],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "ifconfig (simulated)\n\neth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>\n    inet 192.168.10.30  netmask 255.255.255.0\n\nlo0: flags=73<UP,LOOPBACK,RUNNING>\n    inet 127.0.0.1  netmask 255.0.0.0"
+      }
+    ]
+  },
+  {
+    "id": "route",
+    "usage": "route",
+    "help": "Show routing table (simulated)",
+    "args": [],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Routing table (simulated)\n\nDestination        Gateway           Interface\n0.0.0.0/0          192.168.10.1      eth0\n192.168.10.0/24    link#2            eth0\n127.0.0.0/8        link#1            lo0"
+      }
+    ]
+  },
+  {
+    "id": "date",
+    "usage": "date",
+    "help": "Show system time (simulated)",
+    "args": [],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Fri Dec 26 12:00:00 UTC 2025 (simulated)"
+      }
+    ]
+  },
+  {
+    "id": "dig",
+    "usage": "dig <name>",
+    "help": "Query DNS records for a name (A record)",
+    "args": ["name"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "; <<>> DiG 9.18.1 <<>> {{name}}\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 12345\n\n;; QUESTION SECTION:\n;{{name}}.\tIN\tA\n\n;; ANSWER SECTION:\n{{name}}.\t{{TTL}}\tIN\tA\t{{IP}}\n\n;; Query time: {{QUERY_TIME}} msec\n;; SERVER: 192.168.10.1#53(192.168.10.1)\n;; WHEN: {{TIMESTAMP}}\n;; MSG SIZE  rcvd: 92"
+      },
+      {
+        "type": "startPhase",
+        "phase": "DNS"
+      }
+    ]
+  },
+  {
+    "id": "nslookup",
+    "usage": "nslookup <name>",
+    "help": "Query DNS server for name information",
+    "args": ["name"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Server:\t\t192.168.10.1\nAddress:\t192.168.10.1#53\n\nNon-authoritative answer:\nName:\t{{name}}\nAddress:\t{{IP}}"
+      },
+      {
+        "type": "startPhase",
+        "phase": "DNS"
+      }
+    ]
+  },
+  {
+    "id": "ping",
+    "usage": "ping <host>",
+    "help": "Basic reachability test (ICMP) (simulated)",
+    "args": ["host"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "PING {{host}} ({{host}}): 56 data bytes\n64 bytes from {{host}}: icmp_seq=0 ttl=58 time=12.1 ms\n64 bytes from {{host}}: icmp_seq=1 ttl=58 time=12.6 ms\n\n--- {{host}} ping statistics ---\n2 packets transmitted, 2 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 12.1/12.4/12.6/0.2 ms"
+      }
+    ]
+  },
+  {
+    "id": "traceroute",
+    "usage": "traceroute <host>",
+    "help": "Trace the network path to a destination (simulated)",
+    "args": ["host"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "traceroute to {{host}} ({{host}}), 30 hops max, 60 byte packets\n 1  192.168.10.1     1.012 ms  0.944 ms  0.901 ms\n 2  203.0.113.1       3.012 ms  2.944 ms  2.901 ms\n 3  {{host}}          14.234 ms  14.001 ms  14.456 ms"
+      }
+    ]
+  },
+  {
+    "id": "nc",
+    "usage": "nc <host> <port>",
+    "help": "Test TCP port reachability (simulated)",
+    "args": ["host", "port"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Connection to {{host}} {{port}} port [tcp/*] succeeded!\n# Firewall: PASS (always green in this room)"
+      }
+    ]
+  },
+  {
+    "id": "telnet",
+    "usage": "telnet <host> <port>",
+    "help": "Test TCP connectivity to a host/port (simulated)",
+    "args": ["host", "port"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "Trying {{host}}:{{port}}...\nConnected to {{host}}.\nEscape character is '^]'.\n# Firewall: PASS (always green in this room)"
+      }
+    ]
+  },
+  {
+    "id": "openssl_connect",
+    "usage": "openssl_connect <host>",
+    "help": "Simulate a TLS handshake to <host>:443 (shows ClientHello/ServerHello)",
+    "args": ["host"],
+    "effects": [
+      {
+        "type": "startPhase",
+        "phase": "PKI"
+      },
+      {
+        "type": "consoleOutput",
+        "text": "CONNECTED(00000003)\n---\nClientHello sent...\nServerHello received...\nCertificate chain verified.\n---\nNew, TLSv1.3, Cipher is TLS_AES_128_GCM_SHA256\nVerify return code: 0 (ok)"
+      }
+    ]
+  },
+  {
+    "id": "curl",
+    "usage": "curl <url>",
+    "help": "Make an HTTP(S) request (http:// triggers HTTP phase, https:// triggers HTTPS phase)",
+    "args": ["url"],
+    "effects": [
+      {
+        "type": "consoleOutput",
+        "text": "GET {{url}}\n\nHTTP/1.1 200 OK\nserver: web-server\ncontent-type: text/html; charset=UTF-8\n\n<html>…</html>\n\n# Firewall: PASS (always green in this room)\n# Tip: use http:// for plaintext vs https:// for encrypted application data"
+      }
+    ]
+  }
+]
