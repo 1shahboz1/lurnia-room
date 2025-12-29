@@ -1,3 +1,23 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:58b9ca6f2eb0457b7a118d7365c2210d44228625b3e2ca4f632d3dc8aecb596a
-size 747
+[
+  {
+    "slug": "baseline",
+    "title": "Baseline Shell",
+    "summary": "Shared room shell (doors, windows, smartboard, ceiling, lights, accent wall)",
+    "final": "/rooms/baseline.final.json",
+    "manifest": "/rooms/baseline.manifest.json"
+  },
+  {
+    "slug": "https",
+    "title": "HTTPS",
+    "summary": "Same layout as /room (networking-lab-v1): doors, windows, smartboard, soffit, ceiling panels, accent wall",
+    "final": "/rooms/https.final.json",
+    "manifest": "/rooms/https.manifest.json"
+  },
+  {
+    "slug": "test-room",
+    "title": "Test Room (Bundler E)",
+    "summary": "Richer décor to validate Epic E bundling pipeline",
+    "final": "/rooms/test-room.final.json",
+    "manifest": "/rooms/test-room.manifest.json"
+  }
+]

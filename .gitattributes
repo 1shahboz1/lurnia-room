@@ -1,4 +1,7 @@
-public/inventory/** filter=lfs diff=lfs merge=lfs -text
-public/rooms/** filter=lfs diff=lfs merge=lfs -text
+# Binary assets in LFS
+public/inventory/**/*.glb filter=lfs diff=lfs merge=lfs -text
 public/textures/** filter=lfs diff=lfs merge=lfs -text
 *.png filter=lfs diff=lfs merge=lfs -text
+
+# JSON files are small - keep them in regular git (not LFS)
+public/rooms/**/*.json -filter -diff -merge text

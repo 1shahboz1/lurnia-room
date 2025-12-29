@@ -1,3 +1,922 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f0dd48edfa481d7def06f9da005e74349040cfd182c8e0467d72751aa785f6c8
-size 19560
+{
+  "schemaVersion": "1.0",
+  "id": "vpn",
+  "meta": {
+    "title": "VPN",
+    "summary": "VPN room (starting from baseline shell)"
+  },
+  "theme": {},
+  "environment": {
+    "background": "#e0e0e0",
+    "shadows": true
+  },
+  "camera": {
+    "position": [
+      8,
+      1.65,
+      6
+    ],
+    "target": [
+      0,
+      1.65,
+      0
+    ],
+    "fov": 60
+  },
+  "structure": {
+    "dimensions": {
+      "width": 30,
+      "height": 9,
+      "depth": 24
+    },
+    "decor": [
+      {
+        "id": "north-text",
+        "type": "text",
+        "position": [
+          6,
+          7,
+          -11.5
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1.2,
+        "content": "NORTH",
+        "material": {
+          "color": "#ffffff"
+        }
+      },
+      {
+        "id": "south-text",
+        "type": "text",
+        "position": [
+          0,
+          7,
+          11.5
+        ],
+        "rotation": [
+          0,
+          3.14159,
+          0
+        ],
+        "scale": 1.2,
+        "content": "SOUTH",
+        "material": {
+          "color": "#333333"
+        }
+      },
+      {
+        "id": "east-text",
+        "type": "text",
+        "position": [
+          14.5,
+          7,
+          0
+        ],
+        "rotation": [
+          0,
+          -1.5708,
+          0
+        ],
+        "scale": 1.2,
+        "content": "EAST",
+        "material": {
+          "color": "#333333"
+        }
+      },
+      {
+        "id": "west-text",
+        "type": "text",
+        "position": [
+          -14.5,
+          7,
+          0
+        ],
+        "rotation": [
+          0,
+          1.5708,
+          0
+        ],
+        "scale": 1.2,
+        "content": "WEST",
+        "material": {
+          "color": "#333333"
+        }
+      },
+      {
+        "id": "accent-back-wall",
+        "type": "firewall_wall",
+        "thickness": 0.02,
+        "color": "#2A3B52",
+        "roughness": 0.7
+      },
+      {
+        "id": "smart-board-backdrop",
+        "type": "wooden_panel_backdrop",
+        "position": [
+          0,
+          4,
+          -12
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "panelWidth": 10,
+        "panelHeight": 6.8,
+        "panelThickness": 0.06,
+        "slatWidth": 0.12,
+        "gapWidth": 0.025,
+        "woodColor": "#7B6048",
+        "hasLEDStrip": true,
+        "ledColor": "#ffffff",
+        "boardDimensions": [
+          6,
+          3.6
+        ]
+      },
+      {
+        "id": "smart-board",
+        "type": "whiteboard",
+        "position": [
+          0,
+          4,
+          -11.9
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          6,
+          3.6,
+          0.1
+        ],
+        "material": {
+          "color": "#ffffff",
+          "roughness": 0.2,
+          "metalness": 0
+        }
+      },
+      {
+        "id": "door-west",
+        "type": "door",
+        "position": [
+          -11,
+          1.5,
+          -11.9
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1.5,
+          3,
+          0.075
+        ],
+        "material": {
+          "color": "#8B4513",
+          "roughness": 0.9,
+          "metalness": 0
+        },
+        "flippedHandle": false
+      },
+      {
+        "id": "door-east",
+        "type": "door",
+        "position": [
+          11,
+          1.5,
+          -11.9
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1.5,
+          3,
+          0.075
+        ],
+        "material": {
+          "color": "#8B4513",
+          "roughness": 0.9,
+          "metalness": 0
+        },
+        "flippedHandle": true
+      },
+      {
+        "id": "window-south-left",
+        "type": "window_view",
+        "position": [
+          -8,
+          4.5,
+          11.9
+        ],
+        "rotation": [
+          0,
+          3.14159,
+          0
+        ],
+        "scale": [
+          7.5,
+          4.2,
+          0.15
+        ],
+        "leftImageUrl": "/textures/window/image1.png",
+        "rightImageUrl": "/textures/window/image3.png",
+        "frameColor": "#2D1B1F",
+        "glassOpacity": 0.25,
+        "parallaxFactor": 0.03
+      },
+      {
+        "id": "window-south-right",
+        "type": "window_view",
+        "position": [
+          8,
+          4.5,
+          11.9
+        ],
+        "rotation": [
+          0,
+          3.14159,
+          0
+        ],
+        "scale": [
+          7.5,
+          4.2,
+          0.15
+        ],
+        "leftImageUrl": "/textures/window/image3.png",
+        "rightImageUrl": "/textures/window/image4.png",
+        "frameColor": "#2D1B1F",
+        "glassOpacity": 0.25,
+        "parallaxFactor": 0.03
+      },
+      {
+        "id": "perimeter-soffit",
+        "type": "ceiling_soffit",
+        "roomWidth": 30,
+        "roomHeight": 9,
+        "roomDepth": 24,
+        "soffitDepth": 3.0375,
+        "soffitDrop": 0.25,
+        "soffitThickness": 0.08,
+        "lightSpacing": 2,
+        "woodColor": "#D4BE94",
+        "lightColor": "#ffffff",
+        "lightIntensity": 1.2,
+        "lightTemperature": 4500
+      },
+      {
+        "id": "ceiling-panels",
+        "type": "ceiling_light_panels",
+        "panels": [
+          {
+            "position": [
+              -7.5,
+              8.95,
+              -6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          },
+          {
+            "position": [
+              0,
+              8.95,
+              -6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          },
+          {
+            "position": [
+              7.5,
+              8.95,
+              -6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          },
+          {
+            "position": [
+              -7.5,
+              8.95,
+              6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          },
+          {
+            "position": [
+              0,
+              8.95,
+              6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          },
+          {
+            "position": [
+              7.5,
+              8.95,
+              6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          }
+        ]
+      },
+      {
+        "id": "honeycomb-west",
+        "type": "honeycomb_wall",
+        "position": [
+          -14.95,
+          3.5,
+          0
+        ],
+        "rotation": [
+          0,
+          1.5708,
+          0
+        ],
+        "wallWidth": 10,
+        "wallHeight": 3.5,
+        "hexSize": 1,
+        "gapSize": 0.02,
+        "protrusionRatio": 0.3
+      }
+    ]
+  },
+  "devices": [
+    {
+      "alias": "desktop1",
+      "category": "desktop",
+      "model": "/inventory/desktops/pc-destkop-setup.glb",
+      "position": [
+        21.53370528791086,
+        9.412846578038195,
+        14.141481849753776
+      ],
+      "rotation": [
+        0,
+        -1.2046602198313665,
+        0
+      ],
+      "scale": [
+        0.07762168143221668,
+        0.07762168143221668,
+        0.07762168143221668
+      ],
+      "metadata": {
+        "title": "Desktop",
+        "originalTitle": "Remote User",
+        "originalId": "desktop1",
+        "originalModelName": "/inventory/desktops/pc-destkop-setup.glb",
+        "worldPosition": [
+          21.53370528791086,
+          9.412846578038195,
+          14.141481849753776
+        ],
+        "worldQuaternion": [
+          0,
+          -0.5665640615171872,
+          0,
+          0.8240176965315423
+        ],
+        "worldScale": [
+          0.9999999999999999,
+          1,
+          0.9999999999999999
+        ],
+        "worldCenter": [
+          18.273166184276697,
+          0.8086320388688564,
+          11.369314103900104
+        ]
+      }
+    },
+    {
+      "alias": "switch1",
+      "category": "switch",
+      "model": "/inventory/switches/c8300-1n1s-4t2x.glb",
+      "position": [
+        0.6040439821105217,
+        0.020000000000000018,
+        0.570045245496281
+      ],
+      "rotation": [
+        -1.6403365678316388e-16,
+        1.471492815080873,
+        1.6619528702697085e-16
+      ],
+      "scale": 1,
+      "metadata": {
+        "title": "Switch",
+        "originalId": "switch1",
+        "originalModelName": "/inventory/switches/c8300-1n1s-4t2x.glb",
+        "worldPosition": [
+          0.6040439821105217,
+          0.020000000000000018,
+          0.570045245496281
+        ],
+        "worldQuaternion": [
+          -5.0313279496041986e-18,
+          0.6711406768543937,
+          6.5579476331391814e-18,
+          0.7413300154933875
+        ],
+        "worldScale": [
+          1,
+          1,
+          1
+        ],
+        "worldCenter": [
+          -16.190616859345745,
+          0.26920900493860267,
+          0.2692007617780597
+        ]
+      }
+    },
+    {
+      "alias": "router1",
+      "category": "router",
+      "model": "/inventory/routers/c8500-12x.glb",
+      "position": [
+        1.0686447655610571,
+        0.01999999999999995,
+        0.7155565248268925
+      ],
+      "rotation": [
+        3.141592653589793,
+        1.3782820758382535,
+        -3.141592653589793
+      ],
+      "scale": 1,
+      "metadata": {
+        "title": "Router",
+        "originalId": "router1",
+        "originalModelName": "/inventory/routers/c8500-12x.glb",
+        "worldPosition": [
+          1.0686447655610571,
+          0.01999999999999995,
+          0.7155565248268925
+        ],
+        "worldQuaternion": [
+          8.322578120147073e-18,
+          0.7717924917137143,
+          -8.322578120147073e-18,
+          0.6358744763979257
+        ],
+        "worldScale": [
+          1,
+          1,
+          1
+        ],
+        "worldCenter": [
+          -16.30322153976317,
+          0.26087100710719824,
+          -9.650804824448398
+        ]
+      }
+    },
+    {
+      "alias": "firewall1",
+      "category": "firewall",
+      "model": "/inventory/Firewall/Firewall-Cisco-FPR-1150.glb",
+      "position": [
+        -4.440892098500626e-15,
+        0.020000000000000018,
+        -2.9999999999999996
+      ],
+      "rotation": [
+        0,
+        -1.5516352719292574,
+        0
+      ],
+      "scale": 1,
+      "metadata": {
+        "title": "Firewall",
+        "originalId": "firewall1",
+        "originalModelName": "/inventory/Firewall/Firewall-Cisco-FPR-1150.glb",
+        "worldPosition": [
+          -4.440892098500626e-15,
+          0.020000000000000018,
+          -2.9999999999999996
+        ],
+        "worldQuaternion": [
+          0,
+          -0.7002999777227688,
+          0,
+          0.7138486822860217
+        ],
+        "worldScale": [
+          1,
+          1,
+          1
+        ],
+        "worldCenter": [
+          -6.781906810633559,
+          1.074729143589737,
+          -3.7853849260814427
+        ]
+      }
+    },
+    {
+      "alias": "earth1",
+      "category": "earth",
+      "model": "/inventory/Earth/earth.glb",
+      "position": [
+        -2.098884462620851,
+        0.019999999999999907,
+        -0.7711628418921812
+      ],
+      "rotation": [
+        2.52370500193309e-16,
+        -1.237284906957293,
+        2.361166792636423e-16
+      ],
+      "scale": [
+        0.00749999877809695,
+        0.00749999877809695,
+        0.00749999877809695
+      ],
+      "metadata": {
+        "title": "Internet",
+        "originalId": "earth1",
+        "originalModelName": "/inventory/Earth/earth.glb",
+        "worldPosition": [
+          -2.098884462620851,
+          0.019999999999999907,
+          -0.7711628418921812
+        ],
+        "worldQuaternion": [
+          3.433335151914583e-17,
+          -0.5799297476048025,
+          2.2999592771942322e-17,
+          0.814666488719789
+        ],
+        "worldScale": [
+          1,
+          1,
+          1
+        ],
+        "worldCenter": [
+          4.704984457500508,
+          0.8130000011801043,
+          1.4525489060137886
+        ]
+      }
+    },
+    {
+      "alias": "web1",
+      "category": "server",
+      "model": "/inventory/servers/server.glb",
+      "position": [
+        -14.66252511060839,
+        1.2755784254986344,
+        11.792701155233297
+      ],
+      "rotation": [
+        -3.141592653589793,
+        1.3968846548405098,
+        -3.141592653589793
+      ],
+      "scale": 1,
+      "metadata": {
+        "title": "Web Server",
+        "originalId": "cdn1",
+        "originalModelName": "/inventory/servers/server.glb",
+        "worldPosition": [
+          -14.66252511060839,
+          1.2755784254986344,
+          11.792701155233297
+        ],
+        "worldQuaternion": [
+          8.626842343197844e-17,
+          0.7658447392206005,
+          8.626842343197844e-17,
+          0.6430255324698473
+        ],
+        "worldScale": [
+          1,
+          1,
+          1
+        ],
+        "worldCenter": [
+          -15.356593310009615,
+          1.158798807956218,
+          12.597445723468942
+        ]
+      }
+    },
+    {
+      "alias": "dns1",
+      "category": "server",
+      "model": "/inventory/servers/server.glb",
+      "position": [
+        -16.995447929666238,
+        1.2755784254986307,
+        11.726468544275592
+      ],
+      "rotation": [
+        -3.1415926535897927,
+        1.4435831299840753,
+        -3.141592653589793
+      ],
+      "scale": 1,
+      "metadata": {
+        "title": "Web Server",
+        "originalId": "dns1",
+        "originalModelName": "/inventory/servers/server.glb",
+        "worldPosition": [
+          -16.995447929666238,
+          1.2755784254986307,
+          11.726468544275592
+        ],
+        "worldQuaternion": [
+          2.331321381412066e-16,
+          0.7506231927412316,
+          2.530923207324214e-16,
+          0.6607305218611895
+        ],
+        "worldScale": [
+          1,
+          1,
+          1
+        ],
+        "worldCenter": [
+          -15.60728478109508,
+          1.1587988079562166,
+          10.909497878181414
+        ]
+      }
+    },
+    {
+      "alias": "pki1",
+      "category": "server",
+      "model": "/inventory/servers/server.glb",
+      "position": [
+        -14.482534830776244,
+        1.2755784254986335,
+        8.85813951017684
+      ],
+      "rotation": [
+        3.1415926535897927,
+        1.5639320339230767,
+        -3.1415926535897922
+      ],
+      "scale": 1,
+      "metadata": {
+        "title": "PKI Server",
+        "originalTitle": "Web Server",
+        "originalId": "pki1",
+        "originalModelName": "/inventory/servers/server.glb",
+        "worldPosition": [
+          -14.482534830776244,
+          1.2755784254986335,
+          8.85813951017684
+        ],
+        "worldQuaternion": [
+          1.5892216232658733e-16,
+          0.7095295057170152,
+          1.5509447990129257e-16,
+          0.7046757272085992
+        ],
+        "worldScale": [
+          1,
+          1,
+          1
+        ],
+        "worldCenter": [
+          -15.762976421034775,
+          1.1587988079562164,
+          9.154795242122384
+        ]
+      }
+    },
+    {
+      "alias": "cdn1",
+      "category": "server",
+      "model": "/inventory/servers/server.glb",
+      "position": [
+        -17.66040156527693,
+        1.2755784254986335,
+        9.906783057660219
+      ],
+      "rotation": [
+        -3.3786144625788917e-16,
+        1.4269035495600828,
+        3.306669628903353e-16
+      ],
+      "scale": 1,
+      "metadata": {
+        "title": "CDN Edge",
+        "originalTitle": "Web Server",
+        "originalId": "web1",
+        "originalModelName": "/inventory/servers/server.glb",
+        "worldPosition": [
+          -17.66040156527693,
+          1.2755784254986335,
+          9.906783057660219
+        ],
+        "worldQuaternion": [
+          -1.952767000918292e-17,
+          0.6544475770069603,
+          1.4453562923292885e-17,
+          0.7561073792456456
+        ],
+        "worldScale": [
+          1,
+          1,
+          1
+        ],
+        "worldCenter": [
+          -15.963492391295267,
+          1.1587988079562161,
+          7.251904554502159
+        ]
+      }
+    },
+    {
+      "alias": "desktop2",
+      "category": "desktop",
+      "model": "/inventory/desktops/gaming_desktop_pc.glb",
+      "position": [
+        7.0025220960247365,
+        1.7959227331710284,
+        -7.838247925338402
+      ],
+      "rotation": [
+        -3.1415926535897922,
+        1.5691299224596422,
+        3.1415926535897927
+      ],
+      "scale": [
+        0.10250994361102478,
+        0.10250994361102478,
+        0.10250994361102478
+      ],
+      "metadata": {
+        "title": "Eavesdropper",
+        "originalTitle": "Desktop",
+        "originalId": "desktop2",
+        "originalModelName": "/inventory/desktops/gaming_desktop_pc.glb",
+        "worldPosition": [
+          7.0025220960247365,
+          1.7959227331710284,
+          -7.838247925338402
+        ],
+        "worldQuaternion": [
+          1.5654457844390194e-16,
+          0.7076956985753177,
+          1.5747380429298184e-16,
+          0.706517372905998
+        ],
+        "worldScale": [
+          1,
+          1,
+          1
+        ],
+        "worldCenter": [
+          6.551591556881831,
+          1.558894158783579,
+          -11.097349791034867
+        ]
+      }
+    },
+    {
+      "alias": "misc1",
+      "category": "misc",
+      "model": "/inventory/misc/guy.glb",
+      "position": [
+        0.8452110185640453,
+        0.6613295280205137,
+        -0.37335680853468034
+      ],
+      "rotation": [
+        -0.14053445037492432,
+        0.04994830008418761,
+        0.06143808644671058
+      ],
+      "scale": [
+        1.663046875,
+        1.663046875,
+        1.663046875
+      ],
+      "metadata": {
+        "title": "misc1",
+        "originalId": "misc1",
+        "originalModelName": "/inventory/misc/guy.glb",
+        "worldPosition": [
+          0.8452110185640453,
+          0.6613295280205137,
+          -0.37335680853468034
+        ],
+        "worldQuaternion": [
+          -0.06938931876871107,
+          0.02705393317666457,
+          0.028876452540641653,
+          0.9968045734391243
+        ],
+        "worldScale": [
+          0.9999999999999999,
+          1,
+          1
+        ],
+        "worldCenter": [
+          6.855932323702544,
+          1.265840082077307,
+          -11.88820391602918
+        ]
+      }
+    }
+  ],
+  "links": [],
+  "flows": [
+    {
+      "id": "vpn-no-vpn",
+      "path": [
+        "desktop1",
+        "earth1",
+        "firewall1"
+      ],
+      "style": {
+        "color": "#f97316",
+        "speed": 1.1
+      }
+    },
+    {
+      "id": "vpn-secure",
+      "path": [
+        "desktop1",
+        "earth1",
+        "firewall1",
+        "router1",
+        "switch1",
+        "web1"
+      ],
+      "style": {
+        "color": "#22c55e",
+        "speed": 1
+      }
+    }
+  ],
+  "phases": [
+    {
+      "id": "DNS",
+      "actions": [
+        {
+          "hud": "No VPN: remote user traffic crosses the Internet in the clear."
+        },
+        {
+          "playFlow": "vpn-no-vpn"
+        }
+      ]
+    },
+    {
+      "id": "PKI",
+      "actions": [
+        {
+          "hud": "Secure Access via VPN: encrypted tunnel carries traffic into the LAN."
+        },
+        {
+          "playFlow": "vpn-secure"
+        }
+      ]
+    }
+  ],
+  "terminal": {
+    "commands": []
+  },
+  "content": {
+    "boards": []
+  }
+}

@@ -1,3 +1,82 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9a8ccea4c8b9ca0d01d3f012c8d9907d3aa2ef68529ac5cea550b7817aadaa80
-size 2305
+{
+  "slug": "test-room",
+  "schemaVersion": "1.0",
+  "meta": {
+    "title": "Test Room (Bundler E)",
+    "summary": "Richer décor to validate Epic E bundling pipeline"
+  },
+  "counts": {
+    "devices": 5,
+    "decor": 14,
+    "flows": 0,
+    "phases": 0,
+    "boards": 0
+  },
+  "assets": [
+    {
+      "originalPublicPath": "inventory/desktops/high_school_desktop_pc_ultra_low_poly.glb",
+      "url": "/rooms/test-room/assets/high_school_desktop_pc_ultra_low_poly.1e52f839.glb",
+      "hash": "1e52f839",
+      "bytes": 441024,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/switches/netgear_24_port_switch.glb",
+      "url": "/rooms/test-room/assets/netgear_24_port_switch.cad41706.glb",
+      "hash": "cad41706",
+      "bytes": 34985508,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/routers/router.glb",
+      "url": "/rooms/test-room/assets/router.27019445.glb",
+      "hash": "27019445",
+      "bytes": 29740904,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/servers/server.glb",
+      "url": "/rooms/test-room/assets/server.3123f227.glb",
+      "hash": "3123f227",
+      "bytes": 9736256,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/Earth/earth.glb",
+      "url": "/rooms/test-room/assets/earth.d5398b77.glb",
+      "hash": "d5398b77",
+      "bytes": 22668640,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "textures/window/image1.png",
+      "url": "/rooms/test-room/assets/image1.c11dfa2c.png",
+      "hash": "c11dfa2c",
+      "bytes": 6289517,
+      "ext": ".png"
+    },
+    {
+      "originalPublicPath": "textures/window/image3.png",
+      "url": "/rooms/test-room/assets/image3.c5725f5b.png",
+      "hash": "c5725f5b",
+      "bytes": 5238405,
+      "ext": ".png"
+    },
+    {
+      "originalPublicPath": "textures/window/image4.png",
+      "url": "/rooms/test-room/assets/image4.71871948.png",
+      "hash": "71871948",
+      "bytes": 5076021,
+      "ext": ".png"
+    }
+  ],
+  "warnings": [
+    "decor 'accent-back-wall' position out of room bounds: [0, 4.5, -18]"
+  ],
+  "files": {
+    "final": "/rooms/test-room.final.json",
+    "manifest": "/rooms/test-room.manifest.json",
+    "preview": "/rooms/test-room/preview.png"
+  },
+  "generatedAt": "2025-11-23T20:22:15.750Z"
+}
