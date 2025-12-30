@@ -35,19 +35,15 @@ export async function loadRoomFinal(slug: string) {
   try {
     let data: unknown
 
-    if (typeof window === 'undefined') {
-      // Server-side: read from filesystem
-      const { readFile } = await import('fs/promises')
-      const { join } = await import('path')
-      const filePath = join(process.cwd(), 'public', 'rooms', `${slug}.final.json`)
-      const raw = await readFile(filePath, 'utf-8')
-      data = JSON.parse(raw)
-    } else {
-      // Client-side: fetch from public URL
-      const res = await fetch(pathRel, { cache: 'no-store' })
-      if (!res.ok) throw new RoomNotFoundError(slug)
-      data = await res.json()
-    }
+    // Use fetch for both server and client to ensure Vercel compatibility
+    // On server, fetch will resolve to the deployed public files
+    const baseUrl = typeof window === 'undefined' 
+      ? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+      : ''
+    
+    const res = await fetch(`${baseUrl}${pathRel}`, { cache: 'no-store' })
+    if (!res.ok) throw new RoomNotFoundError(slug)
+    data = await res.json()
 
     const parsed = RoomConfigV1.safeParse(data)
     if (!parsed.success) {
