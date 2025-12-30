@@ -39,6 +39,7 @@ interface InventoryItem {
   name: string
   displayName: string
   filename: string
+  relativePath: string
   category: string
   emoji: string
   fileSize: number
@@ -78,7 +79,9 @@ export function InventorySheet({
   const fetchInventoryData = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/scan-inventory')
+      // Static file served from /public/inventory/index.json
+      // Avoids Vercel serverless function size limits caused by scanning the filesystem at runtime.
+      const response = await fetch('/inventory/index.json')
       if (!response.ok) throw new Error('Failed to fetch inventory')
       const data = await response.json()
       

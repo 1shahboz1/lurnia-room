@@ -1,0 +1,117 @@
+{
+  "allCategories": [
+    "Desktops",
+    "Earth",
+    "Firewall",
+    "Misc",
+    "Routers",
+    "Servers",
+    "Switches"
+  ],
+  "items": [
+    {
+      "id": "inventory-gaming_desktop_pc",
+      "name": "gaming_desktop_pc",
+      "displayName": "Gaming desktop pc",
+      "filename": "gaming_desktop_pc.glb",
+      "relativePath": "desktops/gaming_desktop_pc.glb",
+      "category": "Desktops",
+      "emoji": "🖥️",
+      "fileSize": 13111576,
+      "polygonCount": 100000,
+      "inRoom": false,
+      "description": "Desktops equipment"
+    },
+    {
+      "id": "inventory-pc-destkop-setup",
+      "name": "pc-destkop-setup",
+      "displayName": "Pc destkop setup",
+      "filename": "pc-destkop-setup.glb",
+      "relativePath": "desktops/pc-destkop-setup.glb",
+      "category": "Desktops",
+      "emoji": "🖥️",
+      "fileSize": 53609544,
+      "polygonCount": 400000,
+      "inRoom": false,
+      "description": "Desktops equipment"
+    },
+    {
+      "id": "inventory-earth",
+      "name": "earth",
+      "displayName": "Earth",
+      "filename": "earth.glb",
+      "relativePath": "Earth/earth.glb",
+      "category": "Earth",
+      "emoji": "🌍",
+      "fileSize": 22668640,
+      "polygonCount": 170000,
+      "inRoom": false,
+      "description": "Earth equipment"
+    },
+    {
+      "id": "inventory-Firewall-Cisco-FPR-1150",
+      "name": "Firewall-Cisco-FPR-1150",
+      "displayName": "Firewall Cisco FPR 1150",
+      "filename": "Firewall-Cisco-FPR-1150.glb",
+      "relativePath": "Firewall/Firewall-Cisco-FPR-1150.glb",
+      "category": "Firewall",
+      "emoji": "🛡️",
+      "fileSize": 2133060,
+      "polygonCount": 16000,
+      "inRoom": false,
+      "description": "Firewall equipment"
+    },
+    {
+      "id": "inventory-guy",
+      "name": "guy",
+      "displayName": "Guy",
+      "filename": "guy.glb",
+      "relativePath": "misc/guy.glb",
+      "category": "Misc",
+      "emoji": "📦",
+      "fileSize": 33935552,
+      "polygonCount": 260000,
+      "inRoom": false,
+      "description": "Misc equipment"
+    },
+    {
+      "id": "inventory-c8500-12x",
+      "name": "c8500-12x",
+      "displayName": "C8500 12x",
+      "filename": "c8500-12x.glb",
+      "relativePath": "routers/c8500-12x.glb",
+      "category": "Routers",
+      "emoji": "🌐",
+      "fileSize": 118208956,
+      "polygonCount": 900000,
+      "inRoom": false,
+      "description": "Routers equipment"
+    },
+    {
+      "id": "inventory-server",
+      "name": "server",
+      "displayName": "Server",
+      "filename": "server.glb",
+      "relativePath": "servers/server.glb",
+      "category": "Servers",
+      "emoji": "🖥️",
+      "fileSize": 9736256,
+      "polygonCount": 74000,
+      "inRoom": false,
+      "description": "Servers equipment"
+    },
+    {
+      "id": "inventory-c8300-1n1s-4t2x",
+      "name": "c8300-1n1s-4t2x",
+      "displayName": "C8300 1n1s 4t2x",
+      "filename": "c8300-1n1s-4t2x.glb",
+      "relativePath": "switches/c8300-1n1s-4t2x.glb",
+      "category": "Switches",
+      "emoji": "🔀",
+      "fileSize": 31624692,
+      "polygonCount": 240000,
+      "inRoom": false,
+      "description": "Switches equipment"
+    }
+  ]
+}
