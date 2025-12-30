@@ -312,7 +312,8 @@ export default function PacketHop({
   const [visible, setVisible] = useState(false)
   
   // Load the network packet model
-  const gltf = useGLTF('/inventory/Network Packet/network-packet.glb')
+  // Note: generated via scripts/generate_packet_glb.mjs (currently outputs an embedded-buffer .gltf)
+  const gltf = useGLTF('/inventory/Network Packet/network-packet.gltf')
   const [packetClone, setPacketClone] = useState<THREE.Group | null>(null)
   
   // Default packet color (matches the "golden" packet feel and stays readable in the room)

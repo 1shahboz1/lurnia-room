@@ -34,9 +34,9 @@ if (typeof globalThis.FileReader === 'undefined') {
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Output path
-const outDir = path.resolve(__dirname, '../public/inventory/Packets')
-const outPath = path.join(outDir, 'network_packet.glb')
+// Output path (matches runtime loader in PacketHop)
+const outDir = path.resolve(__dirname, '../public/inventory/Network Packet')
+const outPath = path.join(outDir, 'network-packet.glb')
 
 // Ensure output dir exists
 fs.mkdirSync(outDir, { recursive: true })
