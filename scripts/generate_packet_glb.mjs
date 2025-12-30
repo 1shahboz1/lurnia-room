@@ -3,6 +3,8 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import * as THREE from 'three'
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js'
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import { Blob as NodeBlob } from 'buffer'
 
 // Minimal Node polyfills for GLTFExporter (FileReader/Blob)
@@ -207,6 +209,32 @@ function makeStamp() {
   return mesh
 }
 
+function makeTextMesh(text, name, zPosition) {
+  // Create a simple text geometry using Three.js shapes (font-free approach)
+  // We'll create a simple "Network Packet" label using box geometry as a placeholder
+  // since loading fonts in Node.js requires additional setup
+  
+  // Create a group to hold individual character boxes
+  const textGroup = new THREE.Group()
+  textGroup.name = name
+  
+  // Simple box-based text representation (visible fallback)
+  const boxGeom = new THREE.BoxGeometry(0.35, 0.08, 0.002)
+  const textMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color('#2a2a2a'),
+    emissive: new THREE.Color('#000000'),
+    emissiveIntensity: 0.0,
+    metalness: 0.0,
+    roughness: 0.9,
+  })
+  
+  const textBox = new THREE.Mesh(boxGeom, textMat)
+  textBox.position.set(0, -0.12, zPosition)
+  textGroup.add(textBox)
+  
+  return textGroup
+}
+
 // Build
 const group = new THREE.Group()
 group.name = 'packet'
@@ -214,11 +242,19 @@ const body = makeBody()
 const flap = makeFlap()
 const stamp = makeStamp()
 
+// Add text meshes on front and back
+// Front face is at z = +0.01, back face at z = -0.01
+const textFront = makeTextMesh('Network Packet', 'packet_text_front', 0.01 + 0.003)
+const textBack = makeTextMesh('Network Packet', 'packet_text_back', -0.01 - 0.003)
+textBack.rotation.y = Math.PI // flip back text to face backward
+
 // Ensure front faces +Z: geometry already extruded along +Z and centered
 // Add children
 group.add(body)
 group.add(flap)
 group.add(stamp)
+group.add(textFront)
+group.add(textBack)
 
 // Add a small backface offset so total faces < 500 and still nice; geometries are already low-poly
 
