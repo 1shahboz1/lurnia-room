@@ -32,15 +32,30 @@ export async function loadRoomFinal(slug: string) {
 
   const pathRel = `/rooms/${slug}.final.json`
 
+  async function resolveBaseUrlOnServer(): Promise<string> {
+    // Prefer request headers (works reliably on Vercel + custom domains)
+    try {
+      const { headers } = await import('next/headers')
+      const h = headers()
+      const host = h.get('x-forwarded-host') || h.get('host')
+      const proto = h.get('x-forwarded-proto') || 'https'
+      if (host) return `${proto}://${host}`
+    } catch {
+      // ignore
+    }
+
+    // Fallbacks
+    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+    return 'http://localhost:3000'
+  }
+
   try {
     let data: unknown
 
-    // Use fetch for both server and client to ensure Vercel compatibility
-    // On server, fetch will resolve to the deployed public files
-    const baseUrl = typeof window === 'undefined' 
-      ? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+    const baseUrl = typeof window === 'undefined'
+      ? await resolveBaseUrlOnServer()
       : ''
-    
+
     const res = await fetch(`${baseUrl}${pathRel}`, { cache: 'no-store' })
     if (!res.ok) throw new RoomNotFoundError(slug)
     data = await res.json()
