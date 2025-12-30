@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/vercel-lfs.mjs && next build",
     "vercel-build": "node scripts/vercel-lfs.mjs && next build",
     "postinstall": "node scripts/vercel-lfs.mjs",
     "start": "next start",
