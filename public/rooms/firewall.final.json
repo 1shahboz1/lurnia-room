@@ -486,7 +486,7 @@
     {
       "alias": "router1",
       "category": "router",
-      "model": "/inventory/routers/c8500-12x.glb",
+      "model": "/inventory/routers/router.glb",
       "position": [
         -3.552713678800501e-15,
         0.020000000000000004,
@@ -502,7 +502,7 @@
         "title": "Router",
         "originalTitle": "C8500 12x",
         "originalId": "router1",
-        "originalModelName": "/inventory/routers/c8500-12x.glb",
+        "originalModelName": "/inventory/routers/router.glb",
         "worldPosition": [
           -3.552713678800501e-15,
           0.020000000000000004,
