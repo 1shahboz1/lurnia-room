@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "node scripts/vercel-lfs.mjs && next build",
     "start": "next start",
     "lint": "next lint",
     "gen:packet": "node scripts/generate_packet_glb.mjs",
