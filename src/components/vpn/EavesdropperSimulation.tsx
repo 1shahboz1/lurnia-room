@@ -225,7 +225,8 @@ function SniffGrabFX({ state, onDone }: { state: SniffState; onDone: () => void 
   const earthRingMatRef = React.useRef<THREE.MeshBasicMaterial | null>(null)
 
   // Fallback asset (used only if we can't clone the actual active PacketHop visuals).
-  const packetGltf = useGLTF('/inventory/Network Packet/network-packet.glb') as any
+  // Keep in sync with PacketHop: we ship a small embedded-buffer GLTF at this path.
+  const packetGltf = useGLTF('/inventory/Network Packet/network-packet.gltf') as any
 
   const packetRootRef = React.useRef<THREE.Group>(null)
   const packetModelRef = React.useRef<THREE.Group>(null)
