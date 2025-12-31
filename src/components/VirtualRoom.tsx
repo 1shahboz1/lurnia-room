@@ -44,6 +44,7 @@ import { showFirewallRulesPanel, useFirewallRules } from '@/store/useFirewallRul
 import PhaseIndicator from '@/components/ui/PhaseIndicator'
 import PrimaryActionPanel from '@/components/ui/PrimaryActionPanel'
 import ToolsDrawer from '@/components/ui/ToolsDrawer'
+import PerfReportOverlay from './PerfReportOverlay'
 
 
 // Room environment configurations - balanced for quality and wave elimination
@@ -6049,6 +6050,55 @@ export default function VirtualRoom({
   const [enableAdaptiveQuality, setEnableAdaptiveQuality] = useState(false)
   const [currentFps, setCurrentFps] = useState(60)
 
+  // Render mode: SAFE-first auto upgrade (persisted per-device)
+  type RenderMode = 'safe' | 'normal'
+  const renderModeStorageKey = 'aiRooms:renderMode'
+
+  const renderModePolicy = useMemo(() => {
+    // Defaults:
+    // - SAFE-first (unknown devices)
+    // - Auto-upgrade to NORMAL after stable FPS window (handled below)
+    let mode: RenderMode = 'safe'
+    let locked = false
+    let source = 'auto'
+
+    if (typeof window === 'undefined') return { mode, locked, source }
+
+    try {
+      const params = new URLSearchParams(window.location.search)
+      const safe = params.get('safe')
+      if (safe === '1') return { mode: 'safe' as RenderMode, locked: true, source: 'forced' }
+      if (safe === '0') return { mode: 'normal' as RenderMode, locked: true, source: 'forced' }
+
+      const stored = localStorage.getItem(renderModeStorageKey)
+      if (stored === 'safe' || stored === 'normal') {
+        return { mode: stored as RenderMode, locked: true, source: 'stored' }
+      }
+    } catch {
+      // ignore
+    }
+
+    return { mode, locked, source }
+  }, [])
+
+  const [renderMode, setRenderMode] = useState<RenderMode>(renderModePolicy.mode)
+  const [renderModeLocked, setRenderModeLocked] = useState<boolean>(renderModePolicy.locked)
+  const [renderModeSource, setRenderModeSource] = useState<string>(renderModePolicy.source)
+
+  // Show a copyable perf report overlay in production via ?perf=1
+  const perfReportEnabled = useMemo(() => {
+    if (typeof window === 'undefined') return false
+    try {
+      const params = new URLSearchParams(window.location.search)
+      return params.get('perf') === '1'
+    } catch {
+      return false
+    }
+  }, [])
+
+  const loadStartTsRef = useRef<number>(typeof performance !== 'undefined' ? performance.now() : Date.now())
+  const [loadMs, setLoadMs] = useState<number | null>(null)
+
   // Restore trace toggle (?restoreTrace=1)
   const restoreTrace = useMemo(() => {
     if (typeof window === 'undefined') return false
@@ -6083,7 +6133,68 @@ export default function VirtualRoom({
     handleObjectLoad: _handleObjectLoad, 
     handleObjectError: _handleObjectError 
   } = useRoomManager(config)
-  
+
+  // Load timing (reported in perf overlay)
+  useEffect(() => {
+    if (!isFullyLoaded) return
+    if (loadMs != null) return
+    try {
+      const now = (typeof performance !== 'undefined' ? performance.now() : Date.now())
+      setLoadMs(Math.max(0, now - loadStartTsRef.current))
+    } catch {
+      // ignore
+    }
+  }, [isFullyLoaded, loadMs])
+
+  // SAFE-first auto-upgrade policy:
+  // After the room is fully loaded, if FPS is stable for a short window, upgrade DPR/render settings.
+  useEffect(() => {
+    if (renderModeLocked) return
+    if (!isFullyLoaded) return
+    if (renderMode !== 'safe') return
+
+    const targetFps = 50
+    const requiredGoodSeconds = 10
+    const maxProbeSeconds = 30
+
+    let good = 0
+    let elapsed = 0
+    const t = setInterval(() => {
+      try {
+        const w: any = window as any
+        const rawFps = w?.__performanceMetrics?.fps
+        if (typeof rawFps !== 'number') return
+        const fps = rawFps
+        if (!Number.isFinite(fps) || fps <= 0) return
+
+        elapsed += 1
+        if (fps >= targetFps) good += 1
+        else good = 0
+
+        if (good >= requiredGoodSeconds) {
+          setRenderMode('normal')
+          setRenderModeLocked(true)
+          setRenderModeSource('auto-upgraded')
+          try { localStorage.setItem(renderModeStorageKey, 'normal') } catch {}
+          clearInterval(t)
+          return
+        }
+
+        if (elapsed >= maxProbeSeconds) {
+          // Lock SAFE to avoid re-probing on every refresh for borderline devices
+          setRenderModeLocked(true)
+          setRenderModeSource('auto-locked')
+          try { localStorage.setItem(renderModeStorageKey, 'safe') } catch {}
+          clearInterval(t)
+        }
+      } catch {
+        // ignore
+      }
+    }, 1000)
+
+    return () => clearInterval(t)
+  }, [renderModeLocked, isFullyLoaded, renderMode])
+
   // Wrap the room manager callbacks to call our props
   const handleObjectLoad = (objectId: string, gltf: GLTF) => {
     console.log(`🔗 VirtualRoom: handleObjectLoad called for ${objectId}`)
@@ -7349,7 +7460,7 @@ export default function VirtualRoom({
         shadows={false}
         /* ✅ IMPORTANT: turn OFF log depth; cap DPR; set ACES/sRGB + modest exposure */
         gl={{
-          antialias: true,
+          antialias: renderMode !== 'safe',
           logarithmicDepthBuffer: false,    // ← fix banding artifacts
           powerPreference: 'high-performance',
           alpha: false,
@@ -7360,7 +7471,7 @@ export default function VirtualRoom({
           failIfMajorPerformanceCaveat: false
         }}
         /* Cap DPR for performance on lower-end devices (prevents full Retina render cost) */
-        dpr={[1, 1.5]}
+        dpr={renderMode === 'safe' ? 1 : [1, 1.5]}
         onCreated={({ gl, scene }) => {
           gl.outputColorSpace = THREE.SRGBColorSpace
           gl.toneMapping = THREE.ACESFilmicToneMapping
@@ -7368,6 +7479,17 @@ export default function VirtualRoom({
           // Ensure a stable black clear between suspense states to avoid white flashes
           gl.setClearColor(0x000000, 1)
           scene.background = null
+
+          // Capture WebGL renderer info for perf reports (best-effort)
+          try {
+            const ctx: any = gl.getContext()
+            const dbg = ctx?.getExtension?.('WEBGL_debug_renderer_info')
+            const vendor = dbg ? ctx.getParameter(dbg.UNMASKED_VENDOR_WEBGL) : ctx?.getParameter?.(ctx.VENDOR)
+            const renderer = dbg ? ctx.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : ctx?.getParameter?.(ctx.RENDERER)
+            const version = ctx?.getParameter?.(ctx.VERSION)
+            const shadingLanguageVersion = ctx?.getParameter?.(ctx.SHADING_LANGUAGE_VERSION)
+            ;(window as any).__WEBGL_INFO__ = { vendor, renderer, version, shadingLanguageVersion }
+          } catch {}
         }}
         frameloop="always"
         onClick={(event) => {
@@ -7429,6 +7551,19 @@ export default function VirtualRoom({
         <CameraCollision config={config} enabled={true} debug={false} collisionDistance={0.6} />
         <PerformanceStatsCollector />
       </Canvas>
+
+      {perfReportEnabled && (
+        <PerfReportOverlay
+          enabled={true}
+          roomId={config.id}
+          renderMode={renderMode}
+          renderModeSource={renderModeSource}
+          renderModeLocked={renderModeLocked}
+          isFullyLoaded={isFullyLoaded}
+          progress={totalProgress}
+          loadMs={loadMs}
+        />
+      )}
       
       <RoomInfo 
         config={config} 
