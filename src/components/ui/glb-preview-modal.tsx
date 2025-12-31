@@ -312,6 +312,8 @@ export function GLBPreviewModal({ isOpen, onClose, modelPath, modelName }: GLBPr
           }}
         >
           <Canvas
+            /* Cap DPR for performance on lower-end devices (prevents full Retina render cost) */
+            dpr={[1, 1.5]}
             camera={{ position: [0, 0, 5], fov: 60 }}
             style={{ width: '100%', height: '100%' }}
           >

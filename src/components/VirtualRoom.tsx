@@ -7359,7 +7359,8 @@ export default function VirtualRoom({
           premultipliedAlpha: false,
           failIfMajorPerformanceCaveat: false
         }}
-        dpr={devPerformanceMode ? [1, 1] : [1, 2]}                        // High DPR for sharp models
+        /* Cap DPR for performance on lower-end devices (prevents full Retina render cost) */
+        dpr={[1, 1.5]}
         onCreated={({ gl, scene }) => {
           gl.outputColorSpace = THREE.SRGBColorSpace
           gl.toneMapping = THREE.ACESFilmicToneMapping
