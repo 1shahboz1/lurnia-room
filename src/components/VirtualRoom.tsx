@@ -45,6 +45,7 @@ import PhaseIndicator from '@/components/ui/PhaseIndicator'
 import PrimaryActionPanel from '@/components/ui/PrimaryActionPanel'
 import ToolsDrawer from '@/components/ui/ToolsDrawer'
 import PerfReportOverlay from './PerfReportOverlay'
+import LoadingGateOverlay from './LoadingGateOverlay'
 
 
 // Room environment configurations - balanced for quality and wave elimination
@@ -5564,7 +5565,7 @@ function RoomInfo({ config, progress, errors }: {
 }
 
 // First-person controls with keyboard turning and mouse look
-function FirstPersonControls({ config }: { config: RoomConfig }) {
+function FirstPersonControls({ config, enabled }: { config: RoomConfig; enabled: boolean }) {
   const { camera, gl } = useThree()
   const velocityRef = useRef(new THREE.Vector3())
   const directionRef = useRef(new THREE.Vector3())
@@ -5597,6 +5598,8 @@ function FirstPersonControls({ config }: { config: RoomConfig }) {
 
   // Handle keyboard input
   useEffect(() => {
+    if (!enabled) return
+
     const shouldBlockMovement = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null
       const active = (typeof document !== 'undefined') ? (document.activeElement as HTMLElement | null) : null
@@ -5676,7 +5679,7 @@ function FirstPersonControls({ config }: { config: RoomConfig }) {
       document.removeEventListener('keydown', handleKeyDown)
       document.removeEventListener('keyup', handleKeyUp)
     }
-  }, [])
+  }, [enabled])
 
   // Track camera rotation for keyboard turning and mouse look
   const cameraRotationRef = useRef({ x: 0, y: 0 }) // X = pitch (up/down), Y = yaw (left/right)
@@ -5690,6 +5693,8 @@ function FirstPersonControls({ config }: { config: RoomConfig }) {
   
   // Handle mouse look controls
   useEffect(() => {
+    if (!enabled) return
+
     let isMouseDown = false
     let hasMovedSinceDrag = false
 
@@ -5801,7 +5806,7 @@ function FirstPersonControls({ config }: { config: RoomConfig }) {
       canvasEl.removeEventListener('webglcontextlost', onContextLost as any, false)
       canvasEl.removeEventListener('webglcontextrestored', onContextRestored as any, false)
     }
-  }, [gl])
+  }, [gl, enabled])
   
   // Emergency cleanup: reset stuck gizmo state if dragging without recent activity
   useEffect(() => {
@@ -5821,6 +5826,8 @@ function FirstPersonControls({ config }: { config: RoomConfig }) {
 
   // Update movement and camera rotation every frame
   useFrame((state, delta) => {
+    if (!enabled) return
+
     // Check global gizmo state - disable camera controls during gizmo drag only
     const globalState = (typeof window !== 'undefined') ? (window as any).globalGizmoState : undefined
     const isDraggingGizmo = !!globalState?.isDragging // Only block when actually dragging
@@ -6085,6 +6092,9 @@ export default function VirtualRoom({
   const [renderModeLocked, setRenderModeLocked] = useState<boolean>(renderModePolicy.locked)
   const [renderModeSource, setRenderModeSource] = useState<string>(renderModePolicy.source)
 
+  // Loading gate: show only if load takes > 1.5s, but block interaction until fully loaded.
+  const [loadingGateVisible, setLoadingGateVisible] = useState(false)
+
   // Show a copyable perf report overlay in production via ?perf=1
   const perfReportEnabled = useMemo(() => {
     if (typeof window === 'undefined') return false
@@ -6133,6 +6143,20 @@ export default function VirtualRoom({
     handleObjectLoad: _handleObjectLoad, 
     handleObjectError: _handleObjectError 
   } = useRoomManager(config)
+
+  useEffect(() => {
+    if (isFullyLoaded) {
+      setLoadingGateVisible(false)
+      return
+    }
+
+    const t = setTimeout(() => {
+      // Only show the overlay if we’re still loading after 1.5s (avoid flashing on fast machines)
+      setLoadingGateVisible(true)
+    }, 1500)
+
+    return () => clearTimeout(t)
+  }, [isFullyLoaded])
 
   // Load timing (reported in perf overlay)
   useEffect(() => {
@@ -7547,8 +7571,8 @@ export default function VirtualRoom({
           </Physics>
         </Suspense>
         
-        <FirstPersonControls config={config} />
-        <CameraCollision config={config} enabled={true} debug={false} collisionDistance={0.6} />
+        <FirstPersonControls config={config} enabled={isFullyLoaded} />
+        <CameraCollision config={config} enabled={isFullyLoaded} debug={false} collisionDistance={0.6} />
         <PerformanceStatsCollector />
       </Canvas>
 
@@ -7564,6 +7588,8 @@ export default function VirtualRoom({
           loadMs={loadMs}
         />
       )}
+
+      <LoadingGateOverlay visible={loadingGateVisible && !isFullyLoaded} progress={totalProgress} />
       
       <RoomInfo 
         config={config} 
