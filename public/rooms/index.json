@@ -1,23 +1,20 @@
 [
   {
-    "slug": "baseline",
-    "title": "Baseline Shell",
-    "summary": "Shared room shell (doors, windows, smartboard, ceiling, lights, accent wall)",
-    "final": "/rooms/baseline.final.json",
-    "manifest": "/rooms/baseline.manifest.json"
+    "slug": "firewall",
+    "title": "Firewall",
+    "summary": "Firewall room",
+    "final": "/rooms/firewall.final.json"
   },
   {
     "slug": "https",
     "title": "HTTPS",
-    "summary": "Same layout as /room (networking-lab-v1): doors, windows, smartboard, soffit, ceiling panels, accent wall",
-    "final": "/rooms/https.final.json",
-    "manifest": "/rooms/https.manifest.json"
+    "summary": "HTTPS room",
+    "final": "/rooms/https.final.json"
   },
   {
-    "slug": "test-room",
-    "title": "Test Room (Bundler E)",
-    "summary": "Richer décor to validate Epic E bundling pipeline",
-    "final": "/rooms/test-room.final.json",
-    "manifest": "/rooms/test-room.manifest.json"
+    "slug": "vpn",
+    "title": "VPN",
+    "summary": "VPN room",
+    "final": "/rooms/vpn.final.json"
   }
 ]

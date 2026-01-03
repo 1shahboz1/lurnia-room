@@ -10,7 +10,7 @@
   - Output: public/rooms/<slug>.final.json
 
   Usage:
-    tsx scripts/bundle_room.ts <path/to/room.source.json> [--slug <slug>] [--clamp none|soft|hard] [--grid <step>] [--dry-run]
+    tsx scripts/bundle_room.ts <path/to/room.source.json> [--slug <slug>] [--clamp none|soft|hard] [--grid <step>] [--dry-run] [--bundle-assets]
 
   Notes:
   - This script intentionally avoids asset copying/hashing (Task 3) and manifest writing (Task 4).
@@ -27,7 +27,7 @@ import type { z } from 'zod'
 type ClampMode = 'none' | 'soft' | 'hard'
 const args = process.argv.slice(2)
 if (args.length === 0) {
-  console.error('Usage: tsx scripts/bundle_room.ts <path/to/room.source.json> [--slug <slug>] [--clamp none|soft|hard] [--grid <step>] [--dry-run]')
+  console.error('Usage: tsx scripts/bundle_room.ts <path/to/room.source.json> [--slug <slug>] [--clamp none|soft|hard] [--grid <step>] [--dry-run] [--bundle-assets]')
   process.exit(1)
 }
 
@@ -47,6 +47,7 @@ const gridStep = Number(readFlag('--grid', '0')) || 0
 const dryRun = hasFlag('--dry-run')
 const updateIndex = hasFlag('--update-index')
 const screenshotUrl = readFlag('--screenshot-url')
+const bundleAssets = hasFlag('--bundle-assets')
 
 // Derive slug from filename if not provided
 const base = path.basename(inputPath)
@@ -363,10 +364,12 @@ function runAssetPipeline(v: V1) {
 }
 
 // Apply asset pipeline on the validated data (non-dry-run still guards writes)
+// Default behavior: do NOT copy/hash assets into per-room folders.
+// To opt-in (e.g. for offline sharing), pass --bundle-assets.
 const finalConfig: V1 = JSON.parse(JSON.stringify(finalCheck.data))
-const { copied, unique } = runAssetPipeline(finalConfig)
+const { copied, unique } = bundleAssets ? runAssetPipeline(finalConfig) : { copied: 0, unique: 0 }
 
-// Re-validate after rewriting paths
+// Re-validate after (optional) rewriting paths
 const afterAssets = RoomConfigV1.safeParse(finalConfig)
 if (!afterAssets.success) {
   console.error('✖ Asset rewriting produced an invalid config (this should not happen):')
@@ -403,7 +406,7 @@ const manifest = {
     phases: Array.isArray((v1 as any).phases) ? (v1 as any).phases.length : 0,
     boards: Array.isArray((v1 as any)?.content?.boards) ? (v1 as any).content.boards.length : 0,
   },
-  assets: Array.from(assetMap.values()),
+  assets: bundleAssets ? Array.from(assetMap.values()) : [],
   warnings,
   files: {
     final: `/rooms/${slug}.final.json`,
@@ -482,7 +485,7 @@ function maybeUpdateIndex() {
   console.log(`   slug: ${slug}`)
   console.log(`   clamp: ${clampMode}${gridStep > 0 ? `, grid=${gridStep}` : ''}`)
   if (warnings.length) console.log(`   warnings: ${warnings.length}`)
-  console.log(`   assets: copied=${copied}, unique=${unique}`)
+  console.log(`   assets: ${bundleAssets ? `copied=${copied}, unique=${unique}` : 'skipped (use --bundle-assets to enable)'}`)
   if (!dryRun) {
     console.log(`   wrote: ${outPath}`)
     console.log(`   wrote: ${manifestPath}`)

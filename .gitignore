@@ -29,6 +29,10 @@ yarn-error.log*
 # Vercel
 .vercel
 
+# Room bundler outputs (do not commit per-room hashed assets)
+public/rooms/**/assets/
+public/rooms/**/preview.png
+
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
