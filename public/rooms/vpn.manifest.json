@@ -1,0 +1,105 @@
+{
+  "slug": "vpn",
+  "schemaVersion": "1.0",
+  "meta": {
+    "title": "VPN",
+    "summary": "VPN room (starting from baseline shell)"
+  },
+  "counts": {
+    "devices": 11,
+    "decor": 14,
+    "flows": 2,
+    "phases": 2,
+    "boards": 0
+  },
+  "assets": [
+    {
+      "originalPublicPath": "inventory/desktops/pc-destkop-setup.glb",
+      "url": "/rooms/vpn/assets/pc-destkop-setup.c5a779a7.glb",
+      "hash": "c5a779a7",
+      "bytes": 53609544,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/switches/c8300-1n1s-4t2x.glb",
+      "url": "/rooms/vpn/assets/c8300-1n1s-4t2x.6d5f8157.glb",
+      "hash": "6d5f8157",
+      "bytes": 31624692,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/routers/c8500-12x.glb",
+      "url": "/rooms/vpn/assets/c8500-12x.e4ae14e7.glb",
+      "hash": "e4ae14e7",
+      "bytes": 118208956,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/Firewall/Firewall-Cisco-FPR-1150.glb",
+      "url": "/rooms/vpn/assets/Firewall-Cisco-FPR-1150.c614330e.glb",
+      "hash": "c614330e",
+      "bytes": 2133060,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/Earth/earth.glb",
+      "url": "/rooms/vpn/assets/earth.d5398b77.glb",
+      "hash": "d5398b77",
+      "bytes": 22668640,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/servers/server.glb",
+      "url": "/rooms/vpn/assets/server.3123f227.glb",
+      "hash": "3123f227",
+      "bytes": 9736256,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/desktops/gaming_desktop_pc.glb",
+      "url": "/rooms/vpn/assets/gaming_desktop_pc.ec49e8e5.glb",
+      "hash": "ec49e8e5",
+      "bytes": 13111576,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/misc/guy.glb",
+      "url": "/rooms/vpn/assets/guy.8ecfecea.glb",
+      "hash": "8ecfecea",
+      "bytes": 33935552,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "textures/window/image1.png",
+      "url": "/rooms/vpn/assets/image1.c11dfa2c.png",
+      "hash": "c11dfa2c",
+      "bytes": 6289517,
+      "ext": ".png"
+    },
+    {
+      "originalPublicPath": "textures/window/image3.png",
+      "url": "/rooms/vpn/assets/image3.c5725f5b.png",
+      "hash": "c5725f5b",
+      "bytes": 5238405,
+      "ext": ".png"
+    },
+    {
+      "originalPublicPath": "textures/window/image4.png",
+      "url": "/rooms/vpn/assets/image4.71871948.png",
+      "hash": "71871948",
+      "bytes": 5076021,
+      "ext": ".png"
+    }
+  ],
+  "warnings": [
+    "device 'desktop1' position out of room bounds: [21.53370528791086, 9.412846578038195, 14.141481849753776]",
+    "device 'dns1' position out of room bounds: [-16.995447929666238, 1.2755784254986307, 11.726468544275592]",
+    "device 'cdn1' position out of room bounds: [-17.66040156527693, 1.2755784254986335, 9.906783057660219]"
+  ],
+  "files": {
+    "final": "/rooms/vpn.final.json",
+    "manifest": "/rooms/vpn.manifest.json",
+    "preview": "/rooms/vpn/preview.png"
+  },
+  "generatedAt": "2025-12-25T02:31:53.675Z"
+}

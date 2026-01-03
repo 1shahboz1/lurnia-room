@@ -20,13 +20,13 @@ function isDevPerformanceMode(): boolean {
   if (typeof window === 'undefined') return false
   try {
     const params = new URLSearchParams(window.location.search)
-    const perfParam = params.get('perf')
-    const urlPerfOn = perfParam === '1'
-    const urlPerfOff = perfParam === '0'
+    const devperfParam = params.get('devperf')
+    const urlPerfOn = devperfParam === '1'
+    const urlPerfOff = devperfParam === '0'
     const lsPerf = (localStorage.getItem('devPerformanceMode') === '1')
     const winPerf = !!(window as any).__DEV_PERF_MODE
     const envPerf = (process.env.NEXT_PUBLIC_DEV_PERF_MODE === '1')
-    const devDefault = false // do not force perf mode by default; opt-in via ?perf=1
+    const devDefault = false // do not force perf mode by default; opt-in via ?devperf=1
     return urlPerfOff ? false : (urlPerfOn || lsPerf || winPerf || envPerf || devDefault)
   } catch {
     return false
@@ -34,22 +34,30 @@ function isDevPerformanceMode(): boolean {
 }
 
 // Ultra-sharp renderer configuration
-function UltraSharpRenderer() {
+function UltraSharpRenderer({ dprManagedByCanvas }: { dprManagedByCanvas?: boolean }) {
   const { gl } = useThree();
   
   useEffect(() => {
     const DEV_PERF = isDevPerformanceMode()
+
     if (process.env.NODE_ENV === 'development') {
-      console.log(DEV_PERF ? '⚙️ Configuring renderer for DEV PERFORMANCE mode' : '🔥 Configuring renderer for ULTRA-SHARP rendering');
+      console.log(
+        dprManagedByCanvas
+          ? '🧪 Configuring renderer (DPR managed by Canvas; DPR ramp enabled)'
+          : (DEV_PERF ? '⚙️ Configuring renderer for DEV PERFORMANCE mode' : '🔥 Configuring renderer for ULTRA-SHARP rendering')
+      );
     }
     
     // Note: antialias and powerPreference are set during canvas creation
-    // Respect dev-performance mode: force DPR=1 to minimize GPU cost
-    const maxPixelRatio = typeof window !== 'undefined' ? window.devicePixelRatio : 1;
-    if (DEV_PERF) {
-      gl.setPixelRatio(1);
-    } else {
-      gl.setPixelRatio(Math.min(maxPixelRatio, 2)); // Cap at 2x for quality
+    // DPR should normally be controlled by the R3F <Canvas dpr={...}> setting.
+    // When the DPR ramp is enabled, do NOT override pixel ratio here.
+    if (!dprManagedByCanvas) {
+      const maxPixelRatio = typeof window !== 'undefined' ? window.devicePixelRatio : 1;
+      if (DEV_PERF) {
+        gl.setPixelRatio(1);
+      } else {
+        gl.setPixelRatio(Math.min(maxPixelRatio, 2)); // Cap at 2x for quality
+      }
     }
     
     // Optional extension checks — skip in performance mode to avoid overhead/noise
@@ -1646,7 +1654,15 @@ try {
 } catch {}
 
 // Dynamic room structure generator
-export function DynamicRoomStructure({ config, hiddenDecorIds }: { config: RoomConfig, hiddenDecorIds?: Set<string> | string[] }) {
+export function DynamicRoomStructure({
+  config,
+  hiddenDecorIds,
+  dprRampEnabled,
+}: {
+  config: RoomConfig,
+  hiddenDecorIds?: Set<string> | string[],
+  dprRampEnabled?: boolean,
+}) {
   // Check if we have room structure data
   const roomStructure = config.roomStructure as RoomDescription['structure'] | undefined
   
@@ -1687,7 +1703,7 @@ export function DynamicRoomStructure({ config, hiddenDecorIds }: { config: RoomC
   return (
     <group>
       {/* Ultra-sharp renderer configuration */}
-      <UltraSharpRenderer />
+      <UltraSharpRenderer dprManagedByCanvas={!!dprRampEnabled} />
       
       {/* Floor (use Lambert) */}
       <RigidBody type="fixed" colliders="cuboid">

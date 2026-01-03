@@ -1854,11 +1854,13 @@ cancelSoftClampOnly()
 const RoomStructure = memo(function RoomStructure({
   config,
   hiddenDecorIds,
+  dprRampEnabled,
 }: {
   config: RoomConfig
   hiddenDecorIds?: Set<string> | string[]
+  dprRampEnabled?: boolean
 }) {
-  return <DynamicRoomStructure config={config} hiddenDecorIds={hiddenDecorIds} />
+  return <DynamicRoomStructure config={config} hiddenDecorIds={hiddenDecorIds} dprRampEnabled={dprRampEnabled} />
 })
 
 // Global stats initializer
@@ -2016,6 +2018,7 @@ function RoomScene({
   savedLayout,
   onLayoutChange,
   devPerformanceMode = false,
+  dprRampEnabled = false,
   restoreTrace = false,
   onRestoreApplied,
   restorePhase = false,
@@ -2055,6 +2058,7 @@ function RoomScene({
     customLabel?: string
   }) => void
   devPerformanceMode?: boolean
+  dprRampEnabled?: boolean
   restoreTrace?: boolean
   onRestoreApplied?: (id: string) => void
   restorePhase?: boolean
@@ -4529,7 +4533,7 @@ function RoomScene({
       )}
       
       {/* Build the room shell from JSON */}
-      {!isolatePacket && <RoomStructure config={config} hiddenDecorIds={hiddenDecorIds} />}
+      {!isolatePacket && <RoomStructure config={config} hiddenDecorIds={hiddenDecorIds} dprRampEnabled={dprRampEnabled} />}
 
       {/* VPN tunnel (visual only): Remote User → Internet → Firewall */}
       {!isolatePacket && isVpnRoom && (
@@ -6095,12 +6099,13 @@ export default function VirtualRoom({
   // Loading gate: show only if load takes > 1.5s, but block interaction until fully loaded.
   const [loadingGateVisible, setLoadingGateVisible] = useState(false)
 
-  // Show a copyable perf report overlay in production via ?perf=1
+  // Optional copyable perf report overlay (debug only).
+  // Note: we no longer use ?perf=1 for this, since perf is now reserved for quality behavior changes.
   const perfReportEnabled = useMemo(() => {
     if (typeof window === 'undefined') return false
     try {
       const params = new URLSearchParams(window.location.search)
-      return params.get('perf') === '1'
+      return params.get('report') === '1'
     } catch {
       return false
     }
@@ -6118,18 +6123,20 @@ export default function VirtualRoom({
     } catch { return false }
   }, [])
 
-  // Dev performance toggle: enable via ?perf=1 or localStorage('devPerformanceMode'='1') or window.__DEV_PERF_MODE or env
+  // Dev performance toggle (forces lower-fidelity paths in some systems):
+  // enable via ?devperf=1, localStorage('devPerformanceMode'='1'), window.__DEV_PERF_MODE, or env.
+  // NOTE: ?perf=1 is reserved for the perf overlay / DPR ramp testing and must NOT force dev-perf.
   const devPerformanceMode = useMemo(() => {
     if (typeof window === 'undefined') return false
     try {
       const params = new URLSearchParams(window.location.search)
-      const perfParam = params.get('perf')
-      const urlPerfOn = perfParam === '1'
-      const urlPerfOff = perfParam === '0'
+      const devperfParam = params.get('devperf')
+      const urlPerfOn = devperfParam === '1'
+      const urlPerfOff = devperfParam === '0'
       const lsPerf = (localStorage.getItem('devPerformanceMode') === '1')
       const winPerf = !!(window as any).__DEV_PERF_MODE
       const envPerf = (process.env.NEXT_PUBLIC_DEV_PERF_MODE === '1')
-      const devDefault = false // Disabled: Let users opt-in with ?perf=1 for better default quality
+      const devDefault = false
       const enabled = urlPerfOff ? false : (urlPerfOn || lsPerf || winPerf || envPerf || devDefault)
       if (enabled) console.log('⚙️ DEV_PERF_MODE: enabled')
       return enabled
@@ -6143,6 +6150,119 @@ export default function VirtualRoom({
     handleObjectLoad: _handleObjectLoad, 
     handleObjectError: _handleObjectError 
   } = useRoomManager(config)
+
+  // DPR ramp (release behavior for selected scenarios):
+  // Start at 1.25, then 1.5 after 10s stable, then 2.0 after 6s stable.
+  // If FPS dips below the target for 3 consecutive seconds, step down one level.
+  const dprRampEnabled = useMemo(() => {
+    if (typeof window === 'undefined') return false
+    try {
+      const params = new URLSearchParams(window.location.search)
+      const forced = params.get('dprRamp')
+      if (forced === '1') return true
+      if (forced === '0') return false
+    } catch {
+      // ignore
+    }
+
+    // Default enable for the heaviest public rooms
+    return config.id === 'firewall' || config.id === 'https' || config.id === 'vpn'
+  }, [config.id])
+
+  const currentFpsRef = useRef(currentFps)
+  useEffect(() => {
+    currentFpsRef.current = currentFps
+  }, [currentFps])
+
+  const [dprOverride, setDprOverride] = useState<number | null>(() => {
+    if (typeof window === 'undefined') return null
+    if (!dprRampEnabled) return null
+    const max = Math.min(2, window.devicePixelRatio || 1)
+    return Math.min(1.25, max)
+  })
+  const dprStageRef = useRef<0 | 1 | 2>(0)
+  const dprGoodSecondsRef = useRef(0)
+  const dprBadSecondsRef = useRef(0)
+
+  useEffect(() => {
+    if (!dprRampEnabled) {
+      setDprOverride(null)
+      return
+    }
+
+    dprStageRef.current = 0
+    dprGoodSecondsRef.current = 0
+    dprBadSecondsRef.current = 0
+
+    const max = typeof window !== 'undefined' ? Math.min(2, window.devicePixelRatio || 1) : 2
+    setDprOverride(Math.min(1.25, max))
+  }, [dprRampEnabled, config.id])
+
+  useEffect(() => {
+    if (!dprRampEnabled) return
+    if (!isFullyLoaded) return
+
+    const targetFps = 50
+    const stepDownAfterBadSeconds = 3
+
+    const stageSecondsRequired: Record<0 | 1 | 2, number> = {
+      0: 10, // 1.25 -> 1.5
+      1: 6,  // 1.5 -> 2.0
+      2: Number.POSITIVE_INFINITY,
+    }
+
+    const stageToDpr = (stage: 0 | 1 | 2) => {
+      const max = typeof window !== 'undefined' ? Math.min(2, window.devicePixelRatio || 1) : 2
+      const base = stage === 0 ? 1.25 : stage === 1 ? 1.5 : 2
+      return Math.min(base, max)
+    }
+
+    const readFps = () => {
+      try {
+        const w: any = window as any
+        const raw = w?.__performanceMetrics?.fps
+        if (typeof raw === 'number' && Number.isFinite(raw)) return raw
+      } catch {}
+      return currentFpsRef.current
+    }
+
+    const t = setInterval(() => {
+      const fps = readFps()
+      if (!Number.isFinite(fps) || fps <= 0) return
+
+      if (fps >= targetFps) {
+        dprGoodSecondsRef.current += 1
+        dprBadSecondsRef.current = 0
+      } else {
+        dprBadSecondsRef.current += 1
+        dprGoodSecondsRef.current = 0
+      }
+
+      const stage = dprStageRef.current
+
+      // Step down quickly if performance tanks
+      if (dprBadSecondsRef.current >= stepDownAfterBadSeconds) {
+        if (stage === 2) dprStageRef.current = 1
+        else if (stage === 1) dprStageRef.current = 0
+        dprGoodSecondsRef.current = 0
+        dprBadSecondsRef.current = 0
+        setDprOverride(stageToDpr(dprStageRef.current))
+        return
+      }
+
+      // Step up only after sustained good FPS
+      const needed = stageSecondsRequired[stage]
+      if (dprGoodSecondsRef.current >= needed) {
+        if (stage === 0) dprStageRef.current = 1
+        else if (stage === 1) dprStageRef.current = 2
+        dprGoodSecondsRef.current = 0
+        dprBadSecondsRef.current = 0
+        setDprOverride(stageToDpr(dprStageRef.current))
+      }
+    }, 1000)
+
+    return () => clearInterval(t)
+  }, [dprRampEnabled, isFullyLoaded])
 
   useEffect(() => {
     if (isFullyLoaded) {
@@ -7495,7 +7615,7 @@ export default function VirtualRoom({
           failIfMajorPerformanceCaveat: false
         }}
         /* Cap DPR for performance on lower-end devices (prevents full Retina render cost) */
-        dpr={renderMode === 'safe' ? 1 : [1, 1.5]}
+        dpr={dprOverride != null ? dprOverride : (renderMode === 'safe' ? 1 : [1, 1.5])}
         onCreated={({ gl, scene }) => {
           gl.outputColorSpace = THREE.SRGBColorSpace
           gl.toneMapping = THREE.ACESFilmicToneMapping
@@ -7563,6 +7683,7 @@ export default function VirtualRoom({
               savedLayout={savedLayoutState}
               onLayoutChange={handleLayoutChange}
               devPerformanceMode={devPerformanceMode}
+              dprRampEnabled={dprRampEnabled}
               restoreTrace={restoreTrace}
               onRestoreApplied={handleRestoreAppliedFromChild}
               isolatePacket={isolatePacket}

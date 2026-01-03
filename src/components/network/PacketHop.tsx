@@ -312,8 +312,8 @@ export default function PacketHop({
   const [visible, setVisible] = useState(false)
   
   // Load the network packet model
-  // Note: generated via scripts/generate_packet_glb.mjs (currently outputs an embedded-buffer .gltf)
-  const gltf = useGLTF('/inventory/Network Packet/network-packet.gltf')
+  // Note: generated via scripts/generate_packet_glb.mjs (expects a binary .glb)
+  const gltf = useGLTF('/inventory/Network Packet/network-packet.glb')
   const [packetClone, setPacketClone] = useState<THREE.Group | null>(null)
   
   // Default packet color (matches the "golden" packet feel and stays readable in the room)
@@ -376,6 +376,22 @@ export default function PacketHop({
       
       setPacketClone(clone)
       try {
+        // The packet label meshes are sometimes nested under a named group (e.g. packet_text_front → unnamed mesh).
+        // Keep based on mesh name OR any ancestor name.
+        const keepMeshNames = new Set(['packet_body', 'packet_flap'])
+        const keepGroupNames = new Set(['packet_text_front', 'packet_text_back'])
+        const shouldKeepMesh = (obj: THREE.Object3D) => {
+          const n = String((obj as any).name || '')
+          if (keepMeshNames.has(n) || keepGroupNames.has(n)) return true
+          let p: any = obj.parent
+          while (p) {
+            const pn = String(p?.name || '')
+            if (keepGroupNames.has(pn)) return true
+            p = p.parent
+          }
+          return false
+        }
+
         const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
         const VERBOSE = params?.get('packetVerbose') === '1' || !!(window as any).__PACKET_VERBOSE__
         if (VERBOSE) {
@@ -386,9 +402,8 @@ export default function PacketHop({
             if ((child as THREE.Mesh).isMesh) {
               const mesh = child as THREE.Mesh
               console.log('    Mesh geometry:', (mesh.geometry as any).type, 'Material:', mesh.material ? (Array.isArray(mesh.material) ? `${(mesh.material as any[]).length} materials` : (mesh.material as any).type) : 'none')
-              // Keep the envelope body, flap, and visible text planes; hide stamp/core/rim
-              const keepOnly = new Set(['packet_body', 'packet_flap', 'packet_text_front', 'packet_text_back'])
-              if (!keepOnly.has((child as any).name)) {
+              // Keep the envelope body, flap, and label text planes; hide stamp/core/rim.
+              if (!shouldKeepMesh(child)) {
                 ;(child as any).visible = false
                 console.log('    ❌ Hiding:', (child as any).name)
               } else {
@@ -401,8 +416,7 @@ export default function PacketHop({
           // Even when not verbose, still hide non-essential meshes
           clone.traverse((child: THREE.Object3D) => {
             if ((child as THREE.Mesh).isMesh) {
-              const keepOnly = new Set(['packet_body', 'packet_flap', 'packet_text_front', 'packet_text_back'])
-              if (!keepOnly.has((child as any).name)) (child as any).visible = false
+              if (!shouldKeepMesh(child)) (child as any).visible = false
             }
           })
         }

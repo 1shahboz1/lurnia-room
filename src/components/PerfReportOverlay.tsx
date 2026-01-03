@@ -21,6 +21,28 @@ function readWebGLInfo(): WebGLInfo {
   }
 }
 
+function readEffectiveDpr(): { x: number | null; y: number | null } {
+  try {
+    const canvases = Array.from(document.querySelectorAll('canvas')) as HTMLCanvasElement[]
+    if (!canvases.length) return { x: null, y: null }
+
+    // Prefer the largest canvas (most likely the R3F one)
+    const c = canvases
+      .slice()
+      .sort((a, b) => (b.width * b.height) - (a.width * a.height))[0]
+
+    const x = c.clientWidth > 0 ? (c.width / c.clientWidth) : null
+    const y = c.clientHeight > 0 ? (c.height / c.clientHeight) : null
+
+    return {
+      x: (typeof x === 'number' && Number.isFinite(x) && x > 0) ? x : null,
+      y: (typeof y === 'number' && Number.isFinite(y) && y > 0) ? y : null,
+    }
+  } catch {
+    return { x: null, y: null }
+  }
+}
+
 function formatMs(ms: number | null | undefined) {
   if (ms == null || !Number.isFinite(ms)) return '—'
   if (ms < 1000) return `${Math.round(ms)} ms`
@@ -50,6 +72,7 @@ export default function PerfReportOverlay({
 
   const [copied, setCopied] = useState(false)
   const [webgl, setWebgl] = useState<WebGLInfo>({})
+  const [effectiveDpr, setEffectiveDpr] = useState<{ x: number | null; y: number | null }>({ x: null, y: null })
 
   const env = useMemo(() => {
     const nav = (typeof navigator !== 'undefined' ? navigator : undefined) as any
@@ -67,7 +90,11 @@ export default function PerfReportOverlay({
   useEffect(() => {
     if (!enabled) return
     setWebgl(readWebGLInfo())
-    const t = setInterval(() => setWebgl(readWebGLInfo()), 1500)
+    setEffectiveDpr(readEffectiveDpr())
+    const t = setInterval(() => {
+      setWebgl(readWebGLInfo())
+      setEffectiveDpr(readEffectiveDpr())
+    }, 1500)
     return () => clearInterval(t)
   }, [enabled])
 
@@ -83,7 +110,10 @@ export default function PerfReportOverlay({
     lines.push(`drawCalls: ${metrics.drawCalls}  triangles: ${metrics.triangles}`)
     lines.push(`geometries: ${metrics.geometries}  textures: ${metrics.textures}  programs: ${metrics.programs}`)
     lines.push('')
-    lines.push(`dpr: ${env.dpr}  viewport: ${env.viewport}  screen: ${env.screen}`)
+    const eff = (effectiveDpr.x != null && effectiveDpr.y != null)
+      ? `${effectiveDpr.x.toFixed(2)}x${effectiveDpr.y.toFixed(2)}`
+      : (env.dpr != null ? String(env.dpr) : 'n/a')
+    lines.push(`dpr: ${eff} (deviceDpr=${env.dpr ?? 'n/a'})  viewport: ${env.viewport}  screen: ${env.screen}`)
     lines.push(`cores: ${env.cores ?? 'n/a'}  deviceMemoryGB: ${env.deviceMemoryGb ?? 'n/a'}`)
     lines.push(`webgl.vendor: ${webgl.vendor || 'n/a'}`)
     lines.push(`webgl.renderer: ${webgl.renderer || 'n/a'}`)
@@ -175,7 +205,10 @@ export default function PerfReportOverlay({
       </div>
 
       <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid rgba(148, 163, 184, 0.18)', opacity: 0.9 }}>
-        <div>dpr: {env.dpr ?? 'n/a'} • viewport: {env.viewport}</div>
+        <div>
+          dpr: {effectiveDpr.x != null && effectiveDpr.y != null ? `${effectiveDpr.x.toFixed(2)}×${effectiveDpr.y.toFixed(2)}` : (env.dpr ?? 'n/a')}
+          {' '}• deviceDpr: {env.dpr ?? 'n/a'} • viewport: {env.viewport}
+        </div>
         <div>cores: {env.cores ?? 'n/a'} • mem: {env.deviceMemoryGb ?? 'n/a'} GB</div>
         <div style={{ marginTop: 6 }}>
           <div style={{ opacity: 0.85 }}>webgl: {webgl.renderer || 'n/a'}</div>

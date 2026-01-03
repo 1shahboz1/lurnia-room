@@ -118,21 +118,29 @@ function classifyPacketType(label: string, fromAnchor?: string, toAnchor?: strin
 
 function MiniMap({ fromAnchor, toAnchor, isActive, speed = 1, phase = 'DNS', roomId }: { fromAnchor?: string; toAnchor?: string; isActive?: boolean; speed?: number; phase?: string; roomId?: string }) {
   // Vertical swimlane layout with larger nodes/text and arrowheads
-  const W = 320
-  const H = 640
-  const CENTER_X = W / 2
-  const BASE_X = CENTER_X - 60 // move all components a bit more to the right
+  // The 3 heavy rooms (firewall/https/vpn) use a compact single-column topology; shrink the viewBox
+  // so the diagram renders larger while the card itself is narrower.
   const isFirewallRoom = roomId === 'firewall'
   const isVpnRoom = roomId === 'vpn'
   const isHttpsRoom = roomId === 'https'
+  const isCompactRoom = isFirewallRoom || isVpnRoom || isHttpsRoom
+
+  const W = isCompactRoom ? 240 : 320
+  const H = 640
+  const CENTER_X = W / 2
+  // Nudge the whole topology slightly to the right (keeps labels visually balanced)
+  const BASE_X = CENTER_X - (isCompactRoom ? 12 : 60)
+  
+  // (keep these booleans for readability below)
+  
   const phaseUi = uiForPhase(phase, roomId)
 
   // Scales
-  const TILE = 56 // node tile size
+  const TILE = isCompactRoom ? 60 : 56 // node tile size
   const HALF = TILE / 2
-  const IMG = 44 // logo size
+  const IMG = isCompactRoom ? 46 : 44 // logo size
   const RX = 10 // corner radius
-  const FONT = 16
+  const FONT = isCompactRoom ? 18 : 16
   const TEXT_Y = HALF + 22
   const STROKE_BASE = 3
   const STROKE_ACTIVE = 5
@@ -377,10 +385,31 @@ function MiniMap({ fromAnchor, toAnchor, isActive, speed = 1, phase = 'DNS', roo
     return () => cancelAnimationFrame(raf)
   }, [])
 
+  const topologyInnerMaxWidthPx = (isFirewallRoom || isVpnRoom || isHttpsRoom) ? 260 : 320
+  // Make the Topology card itself slightly narrower by reducing its padding,
+  // while keeping the internal lane sizing logic unchanged.
+  const topologyCardPadPx = 6
+  const topologyCardMaxWidthPx = topologyInnerMaxWidthPx + (topologyCardPadPx * 2)
+
   return (
-    <div style={{ background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 10, padding: 10, marginBottom: 10 }}>
+    <div style={{ background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 10, padding: topologyCardPadPx, marginBottom: 10, maxWidth: topologyCardMaxWidthPx, marginLeft: 'auto', marginRight: 'auto' }}>
       <div style={{ fontSize: 12, color: '#475569', marginBottom: 6 }}>Topology</div>
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+      <div
+        style={{
+          width: '100%',
+          maxWidth: topologyInnerMaxWidthPx,
+          margin: '0 auto',
+          // Scale the topology diagram down on shorter viewports (prevents it from rendering off-screen)
+          height: 'min(640px, 60vh)',
+        }}
+      >
+        <svg
+          width="100%"
+          height="100%"
+          viewBox={`0 0 ${W} ${H}`}
+          preserveAspectRatio="xMidYMid meet"
+          style={{ display: 'block' }}
+        >
         <defs>
           <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="10" refY="3.5" orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L10,3.5 L0,7 Z" fill="#3b82f6" />
@@ -396,12 +425,17 @@ function MiniMap({ fromAnchor, toAnchor, isActive, speed = 1, phase = 'DNS', roo
         </g>
 
         {/* Lanes */}
-        {lanes.map((ln, i) => (
-          <g key={i}>
-            <rect x={8} y={ln.y} width={W - 16} height={ln.h} rx={8} ry={8} fill="#f8fafc" stroke="#e2e8f0" strokeWidth={1} />
-            <text x={16} y={ln.y + 18} fontSize={12} textAnchor="start" fill="#64748b">{ln.label}</text>
-          </g>
-        ))}
+        {lanes.map((ln, i) => {
+          // Make lanes fill the available viewBox width (reduces side gap) without changing
+          // the topology card size or Live Flow panel size.
+          const laneMarginX = isCompactRoom ? 0 : 8
+          return (
+            <g key={i}>
+              <rect x={laneMarginX} y={ln.y} width={W - (laneMarginX * 2)} height={ln.h} rx={8} ry={8} fill="#f8fafc" stroke="#e2e8f0" strokeWidth={1} />
+              <text x={laneMarginX + 8} y={ln.y + 18} fontSize={12} textAnchor="start" fill="#64748b">{ln.label}</text>
+            </g>
+          )
+        })}
 
         {/* Edges with arrowheads */}
         {edges.map(([a,b], i) => {
@@ -450,7 +484,11 @@ function MiniMap({ fromAnchor, toAnchor, isActive, speed = 1, phase = 'DNS', roo
           const bg = isFrom || isTo ? '#dbeafe' : '#ffffff'
           const img = logoFor[n.id] || '/cable.png'
           const rightLabel = n.id === 'desktop1' || n.id === 'switch1' || n.id === 'router1' || n.id === 'firewall1' || n.id === 'earth1'
-          const labelX = rightLabel ? (HALF + 10) : 0
+
+          // Keep icons centered in the tile frame.
+          const iconOffsetX = 0
+
+          const labelX = rightLabel ? (HALF + 12) : 0
           const labelY = rightLabel ? 0 : TEXT_Y
           const textAnchor = rightLabel ? 'start' as const : 'middle' as const
           const dominantBaseline = rightLabel ? 'middle' : undefined
@@ -466,7 +504,8 @@ function MiniMap({ fromAnchor, toAnchor, isActive, speed = 1, phase = 'DNS', roo
             </g>
           )
         })}
-      </svg>
+        </svg>
+      </div>
     </div>
   )
 }
@@ -1118,7 +1157,8 @@ export default function LiveFlowHUD({
       left: 16,
       zIndex: 2000,
       pointerEvents: 'auto',
-      width: 360,
+      width: 300,
+      maxWidth: 'calc(100vw - 32px)',
     }}>
       <div style={{
         background: 'rgba(17,24,39,0.85)',
@@ -1126,7 +1166,10 @@ export default function LiveFlowHUD({
         color: '#e5e7eb',
         borderRadius: 12,
         padding: 12,
-        boxShadow: '0 8px 24px rgba(0,0,0,0.25)'
+        boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
+        maxHeight: 'calc(100vh - 40px)',
+        overflowY: 'auto',
+        overflowX: 'hidden',
       }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -1168,12 +1211,12 @@ export default function LiveFlowHUD({
               }}>
                 {from} → {to}
               </div>
-              {!hidePhaseSelect && (
-                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                  <select
-                    value={phaseSel}
-                    onChange={(e) => {
-                      const p = e.target.value
+                {!hidePhaseSelect && (
+                  <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    <select
+                      value={phaseSel}
+                      onChange={(e) => {
+                        const p = e.target.value
 
                       // HTTPS room: prevent selecting HTTPS until Fix HTTPS is completed.
                       if (roomId === 'https' && p === 'HTTPS' && !httpsUnlocked) {
@@ -1183,12 +1226,12 @@ export default function LiveFlowHUD({
                         return
                       }
 
-                      setPhaseSel(p)
-                      dispatch('flow-control', { action: 'setPhase', phase: p })
-                    }}
-                    style={{ background: '#111827', color: 'white', border: '1px solid #374151', borderRadius: 6, padding: '6px 8px', fontSize: 12 }}
-                    aria-label="Phase"
-                    title={roomId === 'vpn'
+                        setPhaseSel(p)
+                        dispatch('flow-control', { action: 'setPhase', phase: p })
+                      }}
+                      style={{ background: '#111827', color: 'white', border: '1px solid #374151', borderRadius: 6, padding: '6px 8px', fontSize: 12 }}
+                      aria-label="Phase"
+                      title={roomId === 'vpn'
                       ? (vpnHudActive ? 'VPN enabled: only Secure Access via VPN is available' : 'VPN disabled: only No VPN is available')
                       : roomId === 'https' && !httpsUnlocked
                         ? 'HTTPS is locked — complete Fix HTTPS to unlock it'

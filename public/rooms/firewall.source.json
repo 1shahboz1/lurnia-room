@@ -1,0 +1,765 @@
+{
+  "schemaVersion": "1.0",
+  "id": "firewall",
+  "meta": {
+    "title": "Firewall",
+    "summary": "Firewall room (starting from baseline shell)"
+  },
+  "theme": {},
+  "environment": {
+    "background": "#e0e0e0",
+    "shadows": true
+  },
+  "camera": {
+    "position": [
+      8,
+      1.65,
+      6
+    ],
+    "target": [
+      0,
+      1.65,
+      0
+    ],
+    "fov": 60
+  },
+  "structure": {
+    "dimensions": {
+      "width": 30,
+      "height": 9,
+      "depth": 24
+    },
+    "decor": [
+      {
+        "id": "north-text",
+        "type": "text",
+        "position": [
+          6,
+          7,
+          -11.5
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1.2,
+        "content": "NORTH",
+        "material": {
+          "color": "#ffffff"
+        }
+      },
+      {
+        "id": "south-text",
+        "type": "text",
+        "position": [
+          0,
+          7,
+          11.5
+        ],
+        "rotation": [
+          0,
+          3.14159,
+          0
+        ],
+        "scale": 1.2,
+        "content": "SOUTH",
+        "material": {
+          "color": "#333333"
+        }
+      },
+      {
+        "id": "east-text",
+        "type": "text",
+        "position": [
+          14.5,
+          7,
+          0
+        ],
+        "rotation": [
+          0,
+          -1.5708,
+          0
+        ],
+        "scale": 1.2,
+        "content": "EAST",
+        "material": {
+          "color": "#333333"
+        }
+      },
+      {
+        "id": "west-text",
+        "type": "text",
+        "position": [
+          -14.5,
+          7,
+          0
+        ],
+        "rotation": [
+          0,
+          1.5708,
+          0
+        ],
+        "scale": 1.2,
+        "content": "WEST",
+        "material": {
+          "color": "#333333"
+        }
+      },
+      {
+        "id": "accent-back-wall",
+        "type": "firewall_wall",
+        "thickness": 0.02,
+        "color": "#2A3B52",
+        "roughness": 0.7
+      },
+      {
+        "id": "smart-board-backdrop",
+        "type": "wooden_panel_backdrop",
+        "position": [
+          0,
+          4,
+          -12
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "panelWidth": 10,
+        "panelHeight": 6.8,
+        "panelThickness": 0.06,
+        "slatWidth": 0.12,
+        "gapWidth": 0.025,
+        "woodColor": "#7B6048",
+        "hasLEDStrip": true,
+        "ledColor": "#ffffff",
+        "boardDimensions": [
+          6,
+          3.6
+        ]
+      },
+      {
+        "id": "smart-board",
+        "type": "whiteboard",
+        "position": [
+          0,
+          4,
+          -11.9
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          6,
+          3.6,
+          0.1
+        ],
+        "material": {
+          "color": "#ffffff",
+          "roughness": 0.2,
+          "metalness": 0
+        }
+      },
+      {
+        "id": "door-west",
+        "type": "door",
+        "position": [
+          -11,
+          1.5,
+          -11.9
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1.5,
+          3,
+          0.075
+        ],
+        "material": {
+          "color": "#8B4513",
+          "roughness": 0.9,
+          "metalness": 0
+        },
+        "flippedHandle": false
+      },
+      {
+        "id": "door-east",
+        "type": "door",
+        "position": [
+          11,
+          1.5,
+          -11.9
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1.5,
+          3,
+          0.075
+        ],
+        "material": {
+          "color": "#8B4513",
+          "roughness": 0.9,
+          "metalness": 0
+        },
+        "flippedHandle": true
+      },
+      {
+        "id": "window-south-left",
+        "type": "window_view",
+        "position": [
+          -8,
+          4.5,
+          11.9
+        ],
+        "rotation": [
+          0,
+          3.14159,
+          0
+        ],
+        "scale": [
+          7.5,
+          4.2,
+          0.15
+        ],
+        "leftImageUrl": "/textures/window/image1.png",
+        "rightImageUrl": "/textures/window/image3.png",
+        "frameColor": "#2D1B1F",
+        "glassOpacity": 0.25,
+        "parallaxFactor": 0.03
+      },
+      {
+        "id": "window-south-right",
+        "type": "window_view",
+        "position": [
+          8,
+          4.5,
+          11.9
+        ],
+        "rotation": [
+          0,
+          3.14159,
+          0
+        ],
+        "scale": [
+          7.5,
+          4.2,
+          0.15
+        ],
+        "leftImageUrl": "/textures/window/image3.png",
+        "rightImageUrl": "/textures/window/image4.png",
+        "frameColor": "#2D1B1F",
+        "glassOpacity": 0.25,
+        "parallaxFactor": 0.03
+      },
+      {
+        "id": "perimeter-soffit",
+        "type": "ceiling_soffit",
+        "roomWidth": 30,
+        "roomHeight": 9,
+        "roomDepth": 24,
+        "soffitDepth": 3.0375,
+        "soffitDrop": 0.25,
+        "soffitThickness": 0.08,
+        "lightSpacing": 2,
+        "woodColor": "#D4BE94",
+        "lightColor": "#ffffff",
+        "lightIntensity": 1.2,
+        "lightTemperature": 4500
+      },
+      {
+        "id": "ceiling-panels",
+        "type": "ceiling_light_panels",
+        "panels": [
+          {
+            "position": [
+              -7.5,
+              8.95,
+              -6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          },
+          {
+            "position": [
+              0,
+              8.95,
+              -6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          },
+          {
+            "position": [
+              7.5,
+              8.95,
+              -6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          },
+          {
+            "position": [
+              -7.5,
+              8.95,
+              6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          },
+          {
+            "position": [
+              0,
+              8.95,
+              6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          },
+          {
+            "position": [
+              7.5,
+              8.95,
+              6
+            ],
+            "size": [
+              5.2,
+              0.03,
+              3.25
+            ]
+          }
+        ]
+      },
+      {
+        "id": "honeycomb-west",
+        "type": "honeycomb_wall",
+        "position": [
+          -14.95,
+          3.5,
+          0
+        ],
+        "rotation": [
+          0,
+          1.5708,
+          0
+        ],
+        "wallWidth": 10,
+        "wallHeight": 3.5,
+        "hexSize": 1,
+        "gapSize": 0.02,
+        "protrusionRatio": 0.3
+      }
+    ]
+  },
+  "devices": [
+    {
+      "alias": "desktop1",
+      "category": "desktop",
+      "model": "/inventory/desktops/gaming_desktop_pc.glb",
+      "position": [
+        19.025766700551685,
+        1.9186019225492639,
+        9.842828407526369
+      ],
+      "rotation": [
+        -3.1311542867972144,
+        0.18972522323761545,
+        -3.084119942486026
+      ],
+      "scale": [
+        0.10250994361102478,
+        0.10250994361102478,
+        0.10250994361102478
+      ],
+      "metadata": {
+        "title": "Desktop",
+        "originalTitle": "Gaming desktop pc",
+        "originalId": "desktop1",
+        "originalModelName": "/inventory/desktops/gaming_desktop_pc.glb",
+        "worldPosition": [
+          19.025766700551685,
+          1.9186019225492639,
+          9.842828407526369
+        ],
+        "worldQuaternion": [
+          0.029096984655018362,
+          0.9950651539882454,
+          0.007915056212408665,
+          0.09453071822159059
+        ],
+        "worldScale": [
+          1.0000000000000002,
+          0.9999999999999999,
+          1.0000000000000004
+        ],
+        "worldCenter": [
+          16.06890001343131,
+          0.6291119556887926,
+          12.30855040836782
+        ],
+        "net": {
+          "zone": "LAN",
+          "hostname": "lan-desktop",
+          "ip": "192.168.10.30",
+          "subnet": "192.168.10.0/24",
+          "gateway": "192.168.10.1",
+          "mac": "02:42:c0:a8:0a:1e",
+          "services": ["SSH (TCP/22)"]
+        }
+      }
+    },
+    {
+      "alias": "switch1",
+      "category": "switch",
+      "model": "/inventory/switches/c8300-1n1s-4t2x.glb",
+      "position": [
+        -1.3322676295501878e-15,
+        0.019999999999999962,
+        -1.0000000000000036
+      ],
+      "rotation": [
+        -3.141592653589793,
+        0.21906401801911157,
+        -3.141592653589793
+      ],
+      "scale": 1,
+      "metadata": {
+        "title": "Switch",
+        "originalTitle": "C8300 1n1s 4t2x",
+        "originalId": "switch1",
+        "originalModelName": "/inventory/switches/c8300-1n1s-4t2x.glb",
+        "worldPosition": [
+          -1.3322676295501878e-15,
+          0.019999999999999962,
+          -1.0000000000000036
+        ],
+        "worldQuaternion": [
+          6.755889536837829e-17,
+          0.9940073643646324,
+          6.755889536837829e-17,
+          0.10931312633383546
+        ],
+        "worldScale": [
+          0.9999999999999999,
+          1,
+          0.9999999999999999
+        ],
+        "worldCenter": [
+          3.774972118522177,
+          0.2692090049386029,
+          11.76241511380194
+        ],
+        "net": {
+          "zone": "LAN",
+          "hostname": "lan-switch",
+          "mgmtIp": "192.168.10.2",
+          "subnet": "192.168.10.0/24",
+          "mac": "02:42:c0:a8:0a:02",
+          "notes": "Layer 2 switch (forwards frames; IP header unchanged)."
+        }
+      }
+    },
+    {
+      "alias": "router1",
+      "category": "router",
+      "model": "/inventory/routers/c8500-12x.glb",
+      "position": [
+        -3.552713678800501e-15,
+        0.020000000000000004,
+        -3.0000000000000036
+      ],
+      "rotation": [
+        -3.141592653589793,
+        1.3075064001152428,
+        -3.141592653589793
+      ],
+      "scale": 1,
+      "metadata": {
+        "title": "Router",
+        "originalTitle": "C8500 12x",
+        "originalId": "router1",
+        "originalModelName": "/inventory/routers/c8500-12x.glb",
+        "worldPosition": [
+          -3.552713678800501e-15,
+          0.020000000000000004,
+          -3.0000000000000036
+        ],
+        "worldQuaternion": [
+          8.584632059428633e-17,
+          0.7938068112139413,
+          8.584632059428636e-17,
+          0.6081699980024946
+        ],
+        "worldScale": [
+          0.9999999999999999,
+          1,
+          0.9999999999999999
+        ],
+        "worldCenter": [
+          -13.919452724487236,
+          0.26087100710719824,
+          12.984850352620223
+        ],
+        "net": {
+          "zone": "LAN",
+          "hostname": "lan-router",
+          "interfaces": [
+            { "name": "LAN", "ip": "192.168.10.1/24", "mac": "02:42:c0:a8:0a:01" },
+            { "name": "to-firewall", "ip": "10.0.0.2/30", "mac": "02:42:0a:00:00:02" }
+          ],
+          "notes": "Default gateway for the LAN; forwards traffic upstream to the firewall."
+        }
+      }
+    },
+    {
+      "alias": "firewall1",
+      "category": "firewall",
+      "model": "/inventory/Firewall/Firewall-Cisco-FPR-1150.glb",
+      "position": [
+        0.00021851059911348614,
+        0.0036716569901444895,
+        0.9998386982529102
+      ],
+      "rotation": [
+        0.046275515747424674,
+        -0.9343864506061469,
+        0.037225753716219626
+      ],
+      "scale": 1,
+      "metadata": {
+        "title": "Firewall",
+        "originalTitle": "Firewall Cisco FPR 1150",
+        "originalId": "firewall1",
+        "originalModelName": "/inventory/Firewall/Firewall-Cisco-FPR-1150.glb",
+        "worldPosition": [
+          0.00021851059911348614,
+          0.0036716569901444895,
+          0.9998386982529102
+        ],
+        "worldQuaternion": [
+          0.01227262189001832,
+          -0.4505679820401508,
+          0.006194741012077582,
+          0.8926362649455848
+        ],
+        "worldScale": [
+          0.9999999999999999,
+          0.9999999999999999,
+          1
+        ],
+        "worldCenter": [
+          2.84059434868967,
+          0.7724915514730826,
+          1.5371138902332622
+        ],
+        "net": {
+          "zone": "EDGE",
+          "hostname": "edge-firewall",
+          "insideIp": "10.0.0.1/30",
+          "outsideIp": "203.0.113.1/24",
+          "insideMac": "02:42:0a:00:00:01",
+          "outsideMac": "02:42:cb:00:71:01",
+          "nat": {
+            "snat": "203.0.113.1",
+            "examples": {
+              "outboundHttps": "192.168.10.30:52345 -> 203.0.113.1:62001",
+              "inboundSshPortForward": "203.0.113.1:22 -> 192.168.10.30:22"
+            }
+          },
+          "notes": "Inspects L3/L4 (zones/protocol/port) and enforces allow/deny."
+        }
+      }
+    },
+    {
+      "alias": "earth1",
+      "category": "earth",
+      "model": "/inventory/Earth/earth.glb",
+      "position": [
+        6.661338147750939e-16,
+        0.019999999999999796,
+        -0.9999999999999964
+      ],
+      "rotation": [
+        -3.141592653589793,
+        -0.8649392048866908,
+        -3.141592653589793
+      ],
+      "scale": [
+        0.00749999877809695,
+        0.00749999877809695,
+        0.00749999877809695
+      ],
+      "metadata": {
+        "title": "Internet",
+        "originalTitle": "Earth",
+        "originalId": "earth1",
+        "originalModelName": "/inventory/Earth/earth.glb",
+        "worldPosition": [
+          6.661338147750939e-16,
+          0.019999999999999796,
+          -0.9999999999999964
+        ],
+        "worldQuaternion": [
+          2.993154102922814e-17,
+          0.9079334737084657,
+          2.993154102922814e-17,
+          -0.41911431295015317
+        ],
+        "worldScale": [
+          1,
+          1,
+          1
+        ],
+        "worldCenter": [
+          1.9491901990195486,
+          0.8130000011801043,
+          -9.255309753936867
+        ],
+        "net": {
+          "zone": "WAN",
+          "hostname": "internet",
+          "notes": "Represents the public Internet / WAN."
+        }
+      }
+    },
+    {
+      "alias": "dns1",
+      "category": "server",
+      "model": "/inventory/servers/server.glb",
+      "position": [
+        -21.825078366532438,
+        0.020000000000002394,
+        -4.058530004045897
+      ],
+      "rotation": [
+        2.6423869636753354e-16,
+        0.7235365184093195,
+        -1.0863500077700227e-16
+      ],
+      "scale": 1,
+      "metadata": {
+        "title": "Web Server",
+        "originalTitle": "DNS Server",
+        "originalId": "dns1",
+        "originalModelName": "/inventory/servers/server.glb",
+        "worldPosition": [
+          -21.825078366532438,
+          0.020000000000002394,
+          -4.058530004045897
+        ],
+        "worldQuaternion": [
+          1.0434306997897233e-16,
+          0.35392858985082615,
+          -4.040847000603775e-18,
+          0.9352724486940721
+        ],
+        "worldScale": [
+          0.9999999999999991,
+          1,
+          0.9999999999999991
+        ],
+        "worldCenter": [
+          -11.350177982924112,
+          1.1587988079562173,
+          -13.528246142747234
+        ],
+        "net": {
+          "zone": "WAN",
+          "hostname": "web-server",
+          "ip": "198.51.100.10",
+          "subnet": "198.51.100.0/24",
+          "mac": "02:42:c6:33:64:0a",
+          "services": ["HTTPS (TCP/443)"]
+        }
+      }
+    },
+    {
+      "alias": "desktop2",
+      "category": "desktop",
+      "model": "/inventory/desktops/gaming_desktop_pc.glb",
+      "position": [
+        -11.309382134000826,
+        2.0441261804650344,
+        -2.234936838211426
+      ],
+      "rotation": [
+        -1.317293477636003e-16,
+        0.31556717602386825,
+        8.301161215157515e-17
+      ],
+      "scale": [
+        0.10250994361102478,
+        0.10250994361102478,
+        0.10250994361102478
+      ],
+      "metadata": {
+        "title": "Attacker's Desktop",
+        "originalTitle": "Gaming desktop pc",
+        "originalId": "inventory-gaming_desktop_pc-1766292485753",
+        "originalModelName": "inventory/desktops/gaming_desktop_pc",
+        "worldPosition": [
+          -11.309382134000826,
+          2.0441261804650344,
+          -2.234936838211426
+        ],
+        "worldQuaternion": [
+          -5.85247056577283e-17,
+          0.1571297146961694,
+          3.0640922416552886e-17,
+          0.9875779730023856
+        ],
+        "worldScale": [
+          0.9999999999999987,
+          1,
+          0.9999999999999987
+        ],
+        "worldCenter": [
+          -11.24509509523916,
+          0.7046138326078486,
+          -4.694977179207412
+        ],
+        "net": {
+          "zone": "WAN",
+          "hostname": "attacker",
+          "ip": "198.51.100.66",
+          "subnet": "198.51.100.0/24",
+          "mac": "02:42:c6:33:64:42",
+          "notes": "Attacker host on the Internet/WAN."
+        }
+      }
+    }
+  ],
+  "links": [],
+  "flows": [],
+  "phases": [],
+  "terminal": {
+    "commands": []
+  },
+  "content": {
+    "boards": []
+  }
+}

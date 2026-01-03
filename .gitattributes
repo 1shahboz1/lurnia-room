@@ -1,1 +1,2 @@
 public/inventory/routers/c8500-12x.glb filter=lfs diff=lfs merge=lfs -text
+*.glb filter=lfs diff=lfs merge=lfs -text

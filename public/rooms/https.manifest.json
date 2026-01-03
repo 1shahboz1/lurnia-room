@@ -1,0 +1,87 @@
+{
+  "slug": "https",
+  "schemaVersion": "1.0",
+  "meta": {
+    "title": "HTTPS",
+    "summary": "Same layout as /room (networking-lab-v1): doors, windows, smartboard, soffit, ceiling panels, accent wall"
+  },
+  "counts": {
+    "devices": 5,
+    "decor": 14,
+    "flows": 1,
+    "phases": 1,
+    "boards": 0
+  },
+  "assets": [
+    {
+      "originalPublicPath": "inventory/desktops/high_school_desktop_pc_ultra_low_poly.glb",
+      "url": "/rooms/https/assets/high_school_desktop_pc_ultra_low_poly.1e52f839.glb",
+      "hash": "1e52f839",
+      "bytes": 441024,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/switches/netgear_24_port_switch.glb",
+      "url": "/rooms/https/assets/netgear_24_port_switch.cad41706.glb",
+      "hash": "cad41706",
+      "bytes": 34985508,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/routers/router.glb",
+      "url": "/rooms/https/assets/router.27019445.glb",
+      "hash": "27019445",
+      "bytes": 29740904,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/servers/server.glb",
+      "url": "/rooms/https/assets/server.3123f227.glb",
+      "hash": "3123f227",
+      "bytes": 9736256,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "inventory/Earth/earth.glb",
+      "url": "/rooms/https/assets/earth.d5398b77.glb",
+      "hash": "d5398b77",
+      "bytes": 22668640,
+      "ext": ".glb"
+    },
+    {
+      "originalPublicPath": "textures/window/image1.png",
+      "url": "/rooms/https/assets/image1.c11dfa2c.png",
+      "hash": "c11dfa2c",
+      "bytes": 6289517,
+      "ext": ".png"
+    },
+    {
+      "originalPublicPath": "textures/window/iamge2.png",
+      "url": "/rooms/https/assets/iamge2.db14f7bc.png",
+      "hash": "db14f7bc",
+      "bytes": 6602544,
+      "ext": ".png"
+    },
+    {
+      "originalPublicPath": "textures/window/image3.png",
+      "url": "/rooms/https/assets/image3.c5725f5b.png",
+      "hash": "c5725f5b",
+      "bytes": 5238405,
+      "ext": ".png"
+    },
+    {
+      "originalPublicPath": "textures/window/image4.png",
+      "url": "/rooms/https/assets/image4.71871948.png",
+      "hash": "71871948",
+      "bytes": 5076021,
+      "ext": ".png"
+    }
+  ],
+  "warnings": [],
+  "files": {
+    "final": "/rooms/https.final.json",
+    "manifest": "/rooms/https.manifest.json",
+    "preview": "/rooms/https/preview.png"
+  },
+  "generatedAt": "2025-11-27T22:03:26.231Z"
+}
